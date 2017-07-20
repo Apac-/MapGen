@@ -33,7 +33,7 @@ public static class MathHelpers {
     /// <param name="maxValue">Upper bound of return value.</param>
     /// <param name="minValue">Lower bound of return value.</param>
     /// <returns></returns>
-    private static int FindValueInDistributionRange(int mean, int standardDeviation, int maxValue, int minValue) {
+    public static int FindValueInDistributionRange(int mean, int standardDeviation, int maxValue, int minValue) {
         int valueInRange;
         while (true) {
             valueInRange = Mathf.RoundToInt(NormalizedGaussianFloat(mean, standardDeviation));
