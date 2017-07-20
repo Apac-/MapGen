@@ -58,17 +58,14 @@ public class MapRoomCreator : MonoBehaviour {
     /// <summary>
     /// Create a number of rooms inside a circle in 2d space
     /// </summary>
-    /// <param name="numberOfRooms">Number of rooms to create</param>
-    /// <param name="spawnElipsisWidth">Width of the spawning area</param>
-    /// <param name="spawnElipsisHeight">Height of the spawning area</param>
     /// <returns></returns>
-    public List<MapRoom> CreateRooms(int numberOfRooms, int spawnElipsisWidth, int spawnElipsisHeight)
+    public List<MapRoom> CreateRooms()
     {
         // Create rooms inside spawn area
         List<MapRoom> rooms = new List<MapRoom>();
-        for (int i = 0; i < numberOfRooms; i++)
+        for (int i = 0; i < numberToCreate; i++)
         {
-            rooms.Add(CreateRoom(spawnElipsisWidth, spawnElipsisHeight));
+            rooms.Add(CreateRoom());
         }
 
         return rooms;
@@ -77,12 +74,10 @@ public class MapRoomCreator : MonoBehaviour {
     /// <summary>
     /// Create a room inside a given spawn area.
     /// </summary>
-    /// <param name="spawnElipsisWidth">Spawn area width</param>
-    /// <param name="spawnElipsisHeight">Spawn area height</param>
     /// <returns></returns>
-    private MapRoom CreateRoom(int spawnElipsisWidth, int spawnElipsisHeight)
+    private MapRoom CreateRoom()
     {
-        Vector2 randomPointInElipsis = MathHelpers.RandomPointInElipsis(spawnElipsisWidth, spawnElipsisHeight);
+        Vector2 randomPointInElipsis = MathHelpers.RandomPointInElipsis(spawnWidth, spawnHeight);
 
         // Round point to lock to 'grid' space
         Point loc = new Point(Mathf.RoundToInt(randomPointInElipsis.x), Mathf.RoundToInt(randomPointInElipsis.y));
