@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 
 public class MapRoom {
     public int Id { get; private set; }
@@ -7,7 +7,8 @@ public class MapRoom {
     // Location is bottom left of the room
     public Point gridLocation { get; set; }
 
-    public Point centerPoint { get { return new Point(gridLocation.X + width / 2, gridLocation.Y + height / 2); } }
+    public Vector2 centerPoint { get { return new Vector2(gridLocation.X + (width / 2), gridLocation.Y + (height / 2)); } }
+
     public Point endPoint { get { return new Point(gridLocation.X + width, gridLocation.Y + height); } }
 
     public int width { get; private set; }
