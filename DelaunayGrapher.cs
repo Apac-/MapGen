@@ -11,7 +11,7 @@ public static class DelaunayGrapher {
     /// </summary>
     /// <param name="percentOfSegementsAboveMinThreshold">Percent of extra connecting line segments to return. If 0% then only returns min spanning tree.</param>
     /// <returns></returns>
-    public static List<LineSegment> FindLineSegments(List<Vector2> centerPoints, float percentOfSegementsAboveMinThreshold)
+    public static List<LineSegment> FindConnectingLineSegments(List<Vector2> centerPoints, float percentOfSegementsAboveMinThreshold)
     {
         Delaunay.Voronoi v = CreateGraph(centerPoints);
 
