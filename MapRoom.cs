@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MapRoom {
@@ -21,4 +22,5 @@ public class MapRoom {
         this.height = height;
         gridLocation = location;
     }
+
 }
