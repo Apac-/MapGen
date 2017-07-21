@@ -1,4 +1,5 @@
-﻿
+﻿using UnityEngine;
+
 public static class MapRoomExtensions {
 
     /// <summary>
@@ -17,6 +18,12 @@ public static class MapRoomExtensions {
         }
         else
             return false;
+    }
+
+    public static bool ContainsPoint(this MapRoom room, Vector2 p)
+    {
+        Point point = p;
+        return room.ContainsPoint(point);
     }
 
 }
