@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,4 +24,11 @@ public class MapRoom {
         gridLocation = location;
     }
 
+    public static Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1)
+    {
+        Point r0c = r0.centerPoint;
+        Point r1c = r1.centerPoint;
+
+        return new Point((r0c.X + r1c.X) / 2, (r0c.Y + r1c.Y) / 2);
+    }
 }
