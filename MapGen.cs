@@ -6,32 +6,7 @@ using UnityEngine;
 
 public class MapGen : MonoBehaviour {
 
-    // Used in adding more connecting paths after the min amount is found to connect all rooms.
-    public float percentOfRoomConnectionAboveMinPath;
-
-    // Speeds up the seperation of phys engine to make generation quicker
-    public float speedOfPhysicsSeperation;
-
-    // We want at least this many hub rooms created
-    public int minAmountOfHubRooms;
-
-    // Used to find the larger rooms to be used as hub rooms
-    public float hubRoomCutoff = 1.25f;
-
-    // The size, in tiles, of how wide a hallway should be.
-    public int sizeOfHallways;
-
-    // Room variables
-    public int numberOfRoomsToCreate;
-    public int roomSpawnEllipsisAreaWidth;
-    public int roomSpawnEllipsisAreaHeight;
-    public int roomMeanWidth;
-    public int roomMeanHeight;
-    public int roomStandardDeviation;
-    public int roomMaxWidth;
-    public int roomMinWidth;
-    public int roomMaxHeight;
-    public int roomMinHeight;
+    public MapSettings mapSettings;
 
     private enum GenerationState { Waiting, RoomsSeperated,}
     private GenerationState currentState;
@@ -51,10 +26,10 @@ public class MapGen : MonoBehaviour {
     {
         SnapRoomLocationToGrid(this.transform);
 
-        List<MapRoom> hubRooms = GetHubRooms(rooms, hubRoomCutoff);
+        List<MapRoom> hubRooms = GetHubRooms(rooms, mapSettings.hubRoomCutoff);
 
         // Re-generate if not enough hub rooms are found
-        if (hubRooms.Count <= minAmountOfHubRooms)
+        if (hubRooms.Count <= mapSettings.minAmountOfHubRooms)
         {
             throw new NotImplementedException();
             currentState = GenerationState.Reset;
@@ -67,9 +42,51 @@ public class MapGen : MonoBehaviour {
             hubRoomCenterPoints.Add(room.centerPoint);
         }
 
-        List<LineSegment> connectingLineSegments = DelaunayGrapher.FindConnectingLineSegments(hubRoomCenterPoints, percentOfRoomConnectionAboveMinPath);
+        List<LineSegment> connectingLineSegments = DelaunayGrapher.FindConnectingLineSegments(hubRoomCenterPoints, mapSettings.percentOfRoomConnectionAboveMinPath);
 
         List<Line> hallwayLines = CreateHallwayLinesFromSegments(connectingLineSegments, hubRooms);
+
+        List<MapRoom> hallwayRooms = new List<MapRoom>();
+        hallwayRooms = FindHallwayRoomsBetweenHubRooms(hallwayLines, hubRooms);
+    }
+
+    /// <summary>
+    /// Use hallway lines to create raycasts that will be used to find all unused rooms between hubrooms.
+    /// </summary>
+    /// <param name="hallwayLines">Lines that run from one hub room to another.</param>
+    /// <param name="hubRooms">Main 'hub' rooms already discoverd.</param>
+    /// <returns></returns>
+    private List<MapRoom> FindHallwayRoomsBetweenHubRooms(List<Line> hallwayLines, List<MapRoom> hubRooms)
+    {
+        List<MapRoom> foundRooms = new List<MapRoom>();
+
+        foreach (Line line in hallwayLines)
+        {
+            // Find heading 
+            Vector2 rayHeading = line.p0 - line.p1;
+
+            // Find distance
+            float rayDistance = rayHeading.magnitude;
+
+            // Find direction
+            Vector2 rayDirection = rayHeading / rayDistance;
+
+            // Throw 2d Raycast
+            RaycastHit2D[] roomsHit = Physics2D.RaycastAll(line.p1, rayDirection, rayDistance);
+
+            // Check found rooms vs Hub rooms; Add to hallwayRooms if not a hub room.
+            for (int i = 0; i < roomsHit.Length; i++)
+            {
+                MapRoom room = roomsHit[i].transform.GetComponent<MapRoomHolder>().mapRoom;
+
+                if (!hubRooms.Contains(room) && !foundRooms.Contains(room))
+                {
+                    foundRooms.Add(room);
+                }
+            }
+        }
+
+        return foundRooms;
     }
 
     /// <summary>
@@ -82,7 +99,7 @@ public class MapGen : MonoBehaviour {
     {
         List<Line> hallwayLines = new List<Line>();
 
-        int hallwayBuffer = sizeOfHallways / 2;
+        int hallwayBuffer = mapSettings.sizeOfHallways / 2;
 
         // Switch that changes up the direction of hall way drawing.
         // Makes for a better visual on end product.
@@ -100,23 +117,23 @@ public class MapGen : MonoBehaviour {
             Vector2 startPoint;
             Vector2 endPoint;
 
-            if (MapRoom.IsPointBetweenXBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer))
+            if (MapRoom.IsPointBetweenXBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer)) // Stright hallway
             {
                 // Create lines from mid point then up and down to rooms.
                 startPoint = new Vector2(midPoint.X, r0.centerPoint.y);
                 endPoint = new Vector2(midPoint.X, r1.centerPoint.y);
 
-                hallwayLines.AddRange(GetHallwayLinesOfSetWidth(startPoint, endPoint, sizeOfHallways, false));
+                hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false));
             }
-            else if (MapRoom.IsPointBetweenYBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer))
+            else if (MapRoom.IsPointBetweenYBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer)) // Stright hallway
             {
                 // Create lines from mid point then left and right to rooms.
                 startPoint = new Vector2(r0.centerPoint.x, midPoint.Y);
                 endPoint = new Vector2(r1.centerPoint.x, midPoint.Y);
 
-                hallwayLines.AddRange(GetHallwayLinesOfSetWidth(startPoint, endPoint, sizeOfHallways, true));
+                hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, true));
             }
-            else
+            else // Right angle bend in hallway
             {
                 int lineAdjustmentY = r0.centerPoint.y > r1.centerPoint.y ? 1 : -1;
                 int lineAdjustmentX = r0.centerPoint.x > r1.centerPoint.x ? 1 : -1;
@@ -125,21 +142,21 @@ public class MapGen : MonoBehaviour {
                 {
                     startPoint = new Vector2(r0.centerPoint.x + lineAdjustmentX, r0.centerPoint.y);
                     endPoint = new Vector2(r1.centerPoint.x - lineAdjustmentX, r0.centerPoint.y);
-                    hallwayLines.AddRange(GetHallwayLinesOfSetWidth(startPoint, endPoint, sizeOfHallways, true));
+                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, true));
 
                     startPoint = new Vector2(r1.centerPoint.x, r1.centerPoint.y - lineAdjustmentY);
                     endPoint = new Vector2(r1.centerPoint.x, r0.centerPoint.y + lineAdjustmentY);
-                    hallwayLines.AddRange(GetHallwayLinesOfSetWidth(startPoint, endPoint, sizeOfHallways, false));
+                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false));
                 }
                 else
                 {
                     startPoint = new Vector2(r0.centerPoint.x, r0.centerPoint.y + lineAdjustmentY);
                     endPoint = new Vector2(r0.centerPoint.x, r1.centerPoint.y - lineAdjustmentY);
-                    hallwayLines.AddRange(GetHallwayLinesOfSetWidth(startPoint, endPoint, sizeOfHallways, false));
+                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false));
 
                     startPoint = new Vector2(r1.centerPoint.x - lineAdjustmentX, r1.centerPoint.y);
                     endPoint = new Vector2(r0.centerPoint.x + lineAdjustmentX, r1.centerPoint.y);
-                    hallwayLines.AddRange(GetHallwayLinesOfSetWidth(startPoint, endPoint, sizeOfHallways, true));
+                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, true));
                 }
 
                 // Flip the line direciton.
@@ -160,7 +177,7 @@ public class MapGen : MonoBehaviour {
     /// <param name="sizeOfHallways">The size of the hallway to make</param>
     /// <param name="isHorizontal">Is the line horizontal or vertical?</param>
     /// <returns></returns>
-    private List<Line> GetHallwayLinesOfSetWidth(Vector2 startPoint, Vector2 endPoint, int sizeOfHallways, bool isHorizontal) {
+    private List<Line> CreateHallwayLinesOfSetWidth(Vector2 startPoint, Vector2 endPoint, int sizeOfHallways, bool isHorizontal) {
         List<Line> segments = new List<Line>();
 
         // Add base line
@@ -317,10 +334,10 @@ public class MapGen : MonoBehaviour {
 
     private List<MapRoom> GenerateMapRooms()
     {
-        MapRoomCreator roomCreator = new MapRoomCreator(numberOfRoomsToCreate, 
-            roomSpawnEllipsisAreaWidth, roomSpawnEllipsisAreaHeight,
-            roomMeanHeight, roomMeanWidth, roomStandardDeviation, 
-            roomMaxWidth, roomMinWidth, roomMaxHeight, roomMinHeight);
+        MapRoomCreator roomCreator = new MapRoomCreator(mapSettings.numberOfRoomsToCreate, 
+            mapSettings.roomSpawnEllipsisAreaWidth, mapSettings.roomSpawnEllipsisAreaHeight,
+            mapSettings.roomMeanHeight, mapSettings.roomMeanWidth, mapSettings.roomStandardDeviation, 
+            mapSettings.roomMaxWidth, mapSettings.roomMinWidth, mapSettings.roomMaxHeight, mapSettings.roomMinHeight);
 
         List<MapRoom> rooms = roomCreator.CreateRooms();
 
@@ -333,7 +350,7 @@ public class MapGen : MonoBehaviour {
 
         float savedTimeScale = Time.timeScale;
 
-        Time.timeScale = speedOfPhysicsSeperation;
+        Time.timeScale = mapSettings.speedOfPhysicsSeperation;
 
         // Check all rooms to see if they have settled into place
         do
