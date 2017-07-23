@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapRoomTools {
+public static class MapRoomTools {
 
     public static Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1)
     {
