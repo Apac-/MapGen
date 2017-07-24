@@ -214,4 +214,24 @@ public static class MapRoomTools {
 
         return new Point(lowestX, lowestY);
     }
+
+    /// <summary>
+    /// Searches given rooms to find one that contains the given point.
+    /// Its assumed that rooms do not overlap thus each room contains unique points.
+    /// </summary>
+    /// <param name="rooms">Map rooms to search through.</param>
+    /// <param name="point">Point that should be contained in one of the given rooms.</param>
+    /// <returns>Returns null is no rooms found.</returns>
+    public static MapRoom FindRoomContainingPoint(List<MapRoom> rooms, Vector2 point)
+    {
+        foreach (MapRoom room in rooms)
+        {
+            if (room.ContainsPoint(point))
+            {
+                return room;
+            }
+        }
+
+        return null;
+    }
 }

@@ -171,8 +171,8 @@ public class MapGen : MonoBehaviour {
         {
             MapRoom r0;
             MapRoom r1;
-            r0 = FindRoomContainingPoint(rooms, segment.p0.Value);
-            r1 = FindRoomContainingPoint(rooms, segment.p1.Value);
+            r0 = MapRoomTools.FindRoomContainingPoint(rooms, segment.p0.Value);
+            r1 = MapRoomTools.FindRoomContainingPoint(rooms, segment.p1.Value);
 
             Point midPoint = MapRoomTools.MidPointBetweenMapRooms(r0, r1);
 
@@ -291,26 +291,6 @@ public class MapGen : MonoBehaviour {
         }
 
         return segments;
-    }
-
-    /// <summary>
-    /// Searches given rooms to find one that contains the given point.
-    /// Its assumed that rooms do not overlap thus each room contains unique points.
-    /// </summary>
-    /// <param name="rooms">Map rooms to search through.</param>
-    /// <param name="point">Point that should be contained in one of the given rooms.</param>
-    /// <returns></returns>
-    private MapRoom FindRoomContainingPoint(List<MapRoom> rooms, Vector2 point)
-    {
-        foreach (MapRoom room in rooms)
-        {
-            if (room.ContainsPoint(point))
-            {
-                return room;
-            }
-        }
-
-        return null;
     }
 
     /// <summary>
