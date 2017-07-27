@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class MapRoomExtensions {
 
@@ -26,4 +27,12 @@ public static class MapRoomExtensions {
         return room.ContainsPoint(point);
     }
 
+    public static void OffsetMaproomGridLocationsToNewMapOrigin(this List<MapRoom> rooms, Point newMapOrigin)
+    {
+        foreach (MapRoom room in rooms)
+        {
+            Point newGridLocation = new Point(room.gridLocation.X - newMapOrigin.X, room.gridLocation.Y - newMapOrigin.Y);
+            room.gridLocation = newGridLocation;
+        }
+    }
 }

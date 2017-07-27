@@ -50,6 +50,9 @@ public class MapGen : MonoBehaviour {
 
         Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
         Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
+
+        hubRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
+        hallwayRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
     }
 
     private Point FindUpperRightPointInMap(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> hallwayLines)
