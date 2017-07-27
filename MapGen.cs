@@ -54,6 +54,52 @@ public class MapGen : MonoBehaviour {
         hubRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
         hallwayRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
         hallwayLines = LineTools.OffsetLinesToNewMapOrigin(hallwayLines, bottomLeftPoint);
+
+        int mapWidth = upperRightPoint.X - bottomLeftPoint.X;
+        int mapHeight = upperRightPoint.Y - bottomLeftPoint.Y;
+        int[][] map = CreateBaseMap(mapWidth, mapHeight);
+
+        AddRoomsToMap(ref map, hubRooms);
+        AddRoomsToMap(ref map, hallwayRooms);
+    }
+
+    /// <summary>
+    /// Modfies the basic map array with room ids in their positions.
+    /// </summary>
+    /// <param name="map">Basic map array</param>
+    /// <param name="rooms">Rooms to add to map</param>
+    private void AddRoomsToMap(ref int[][] map, List<MapRoom> rooms)
+    {
+        foreach (MapRoom room in rooms) {
+            int locX = room.gridLocation.X;
+            int locY = room.gridLocation.Y;
+            for (int x = 0; x < room.width; x++) {
+                for (int y = 0; y < room.height; y++) {
+                    map[locX + x][locY + y] = room.Id;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Create and zero out a 2d array for the basic map info.
+    /// </summary>
+    /// <param name="mapWidth">Width of the used map area.</param>
+    /// <param name="mapHeight">Height of the used map area.</param>
+    /// <returns></returns>
+    private int[][] CreateBaseMap(int mapWidth, int mapHeight)
+    {
+        int[][] map = new int[mapWidth][];
+
+        // Zero map out
+        for (int mapX = 0; mapX < map.Length; mapX++) {
+            map[mapX] = new int[mapHeight];
+            for (int mapY = 0; mapY < map[mapX].Length; mapY++) {
+                map[mapX][mapY] = 0;
+            }
+        }
+
+        return map;
     }
 
     private Point FindUpperRightPointInMap(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> hallwayLines)
