@@ -53,6 +53,7 @@ public class MapGen : MonoBehaviour {
 
         hubRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
         hallwayRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
+        hallwayLines = LineTools.OffsetLinesToNewMapOrigin(hallwayLines, bottomLeftPoint);
     }
 
     private Point FindUpperRightPointInMap(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> hallwayLines)
