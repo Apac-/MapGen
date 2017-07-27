@@ -54,7 +54,6 @@ public static class MapRoomTools {
         return false;
     }
 
-
     /// <summary>
     /// Finds the point at the upper right of the map.
     /// </summary>
@@ -104,6 +103,373 @@ public static class MapRoomTools {
         }
 
         return new Point(greatestX, greatestY);
+    }
+
+    /// <summary>
+    /// Creates map rooms from filler space in a basic map. Filler space is denoted as 1.
+    /// </summary>
+    /// <param name="map">Basic map 2d array</param>
+    /// <returns></returns>
+    public static List<MapRoom> CreateRoomsFromFiller(int[][] map)
+    {
+        // Look for all 'tiles' that are ID of 1 (filler).
+        HashSet<Point> fillerPoints = new HashSet<Point>();
+        for (int x = 0; x < map.Length; x++)
+        {
+            for (int y = 0; y < map[x].Length; y++)
+            {
+                if (map[x][y] == 1)
+                    fillerPoints.Add(new Point(x, y));
+            }
+        }
+
+        // use Flood fill to find groupings of connected points on grid space
+        List<HashSet<Point>> fillerGroupings = new List<HashSet<Point>>();
+        HashSet<Point> usedPoints = new HashSet<Point>();
+        foreach (Point p in fillerPoints) {
+            if (usedPoints.Contains(p))
+                continue;
+
+            HashSet<Point> room = new HashSet<Point>();
+            room.Add(p);
+            usedPoints.Add(p);
+
+            Queue<Point> q = new Queue<Point>();
+            q.Enqueue(p);
+
+            while (q.Count > 0)
+            {
+                Point current = q.Dequeue();
+
+                List<Point> adjacentPoints = GetSurroundingPoints(current, fillerPoints);
+
+                foreach (Point adjacentPoint in adjacentPoints)
+                {
+                    if (!usedPoints.Contains(adjacentPoint))
+                    {
+                        usedPoints.Add(adjacentPoint);
+
+                        room.Add(adjacentPoint);
+
+                        q.Enqueue(adjacentPoint);
+                    }
+                }
+            }
+
+            fillerGroupings.Add(room);
+        }
+
+        List<MapRoom> rooms = new List<MapRoom>();
+
+        // Take in rooms List<HashSet<Point>> and create map rooms out of it.
+        foreach (HashSet<Point> fillerGroup in fillerGroupings) {
+            List<HashSet<Point>> seperatedRooms = FindRoomsInGroup(fillerGroup);
+
+            // Create a collection of dungeon rooms from hashSets of points
+            rooms.AddRange(CreateRoomsFromHashSets(seperatedRooms));
+        }
+
+        return rooms;
+    }
+
+    /// <summary>
+    /// Creates MapRooms from hashsets of points that are already processed into squares or rectangles.
+    /// </summary>
+    /// <param name="rooms">Pre-processed sets of points that make up square or rectangle room groupings</param>
+    /// <returns></returns>
+    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms)
+    {
+        List<MapRoom> createdRooms = new List<MapRoom>();
+
+        foreach (HashSet<Point> room in rooms)
+        {
+            int width = 1;
+            int height = 1;
+
+            Point startPoint = new Point(100000, 100000);
+
+            foreach (Point p in room)
+            {
+                // Find lowest starting point
+                if (p.X <= startPoint.X && p.Y <= startPoint.Y)
+                    startPoint = p;
+
+                // get width
+                int tempWidth = p.X - startPoint.X + 1;
+                if (tempWidth > width)
+                    width = tempWidth;
+
+                // get height
+                int tempHeight = p.Y - startPoint.Y + 1;
+                if (tempHeight > height)
+                    height = tempHeight;
+            }
+
+            
+            // TODO: Figure out ID pass in
+            createdRooms.Add(new MapRoom(startPoint, width, height));
+        }
+
+        return createdRooms;
+    }
+
+    /// <summary>
+    /// Finds rooms within a connected point grouping.
+    /// </summary>
+    /// <param name="connectedGroup">connected point grouping</param>
+    /// <returns></returns>
+    private static List<HashSet<Point>> FindRoomsInGroup(HashSet<Point> connectedGroup)
+    {
+        HashSet<Point> unusedPoints = connectedGroup;
+
+        List<HashSet<Point>> foundRooms = new List<HashSet<Point>>();
+
+        // Find all square or rectangle rooms in a grouping of connected points
+        while (unusedPoints.Count > 0)
+        {
+            // Find a room in the unused point group
+            HashSet<Point> foundRoom = FindRoomInGroup(unusedPoints);
+            
+            // Add found room to the found rooms list
+            foundRooms.Add(foundRoom);
+
+            // Remove the points of the found room from the unused Points group
+            foreach (Point p in foundRoom)
+                unusedPoints.Remove(p);
+        }
+
+        return foundRooms;
+    }
+
+    /// <summary>
+    /// Finds individual rooms within a connected point grouping.
+    /// </summary>
+    /// <param name="connectedGroup">Avilable points to find room in.</param>
+    /// <returns></returns>
+    private static HashSet<Point> FindRoomInGroup(HashSet<Point> connectedGroup)
+    {
+        // Init start point to large number, used later to find lower point.
+        Point startPoint = new Point(100000, 100000);
+
+        // Find lowest starting point
+        foreach (Point p in connectedGroup)
+        {
+            if (p.X <= startPoint.X && p.Y <= startPoint.Y)
+                startPoint = p;
+        }
+
+        HashSet<Point> roomPoints = new HashSet<Point>();
+
+        // init helpers
+        bool diagUsable = true;
+        int diagStep = 0;
+        Point lastPoint = startPoint;
+
+        // move up and right one, check
+        while (diagUsable)
+        {
+            Point currentPoint = new Point(startPoint.X + diagStep, startPoint.Y + diagStep);
+
+            if (connectedGroup.Contains(currentPoint))
+            {
+                List<Point> currentPoints = new List<Point>();
+                currentPoints.Add(currentPoint);
+
+                bool downPassed = true;
+                bool backPassed = true;
+
+                // check downwards
+                for (int i = 1; i <= diagStep; i++)
+                {
+                    Point stepPoint = new Point(currentPoint.X, currentPoint.Y - i);
+
+                    if (connectedGroup.Contains(stepPoint))
+                        currentPoints.Add(stepPoint);
+                    else
+                        downPassed = false;
+                }
+
+                // check backwards
+                for (int i = 1; i <= diagStep; i++)
+                { 
+                    Point stepPoint = new Point(currentPoint.X - i, currentPoint.Y);
+
+                    if (connectedGroup.Contains(stepPoint))
+                        currentPoints.Add(stepPoint);
+                    else
+                        backPassed = false;
+                }
+
+                // add to list if both pass
+                if (downPassed && backPassed)
+                {
+                    lastPoint = currentPoint;
+
+                    diagStep++;
+
+                    foreach (Point p in currentPoints)
+                    {
+                        roomPoints.Add(p);
+                    }
+                }
+                else // or flag diag point as not usable
+                    diagUsable = false;
+            }
+            else
+                diagUsable = false; // escape while loop
+
+            if (diagUsable == false)
+            {
+                currentPoint = lastPoint;
+
+                if (diagStep > 0)
+                    diagStep--;
+
+                List<Point> currentPoints = new List<Point>();
+
+                // check right
+                if (connectedGroup.Contains(new Point(currentPoint.X + 1, currentPoint.Y)))
+                {
+                    int step = 1;
+
+                    // Move right a step, then check all tiles below it down to start point's y. Repeate till fail.
+                    while (true)
+                    {
+                        List<Point> linePoints = new List<Point>();
+
+                        // Indicates a full slice of tiles from step point to start points y bound.
+                        bool fullLineOfPoints = true;
+
+                        // step right
+                        Point stepPoint = new Point(currentPoint.X + step, currentPoint.Y);
+                        if (connectedGroup.Contains(stepPoint))
+                        {
+                            linePoints.Add(stepPoint);
+
+                            // check all tiles below step point
+                            for (int i = 1; i <= diagStep; i++)
+                            {
+                                Point p = new Point(stepPoint.X, stepPoint.Y - i);
+
+                                if (connectedGroup.Contains(p))
+                                    linePoints.Add(p);
+                                else
+                                {
+                                    fullLineOfPoints = false;
+                                    break;
+                                }
+                            }
+
+                            // If a full slice is found, add to keeper points
+                            if (fullLineOfPoints)
+                                currentPoints.AddRange(linePoints);
+                            else
+                                break;
+                        }
+                        else // Break out if right step is no longer viable
+                            break;
+
+                        // Move step one more to right
+                        step++;
+                    }
+
+                }
+                else if (connectedGroup.Contains(new Point(currentPoint.X, currentPoint.Y + 1)))
+                { // check up
+                    int step = 1;
+
+                    // Move up a step, then check all tiles to the left start point's x. Repeate till fail.
+                    while (true)
+                    {
+                        List<Point> linePoints = new List<Point>();
+
+                        // Indicates if a full slice of tiles from step point to start points y bound.
+                        bool fullLineOfPoints = true;
+
+                        // step up 
+                        Point stepPoint = new Point(currentPoint.X, currentPoint.Y + step);
+                        if (connectedGroup.Contains(stepPoint))
+                        {
+                            linePoints.Add(stepPoint);
+
+                            // check all tiles to the left of step point
+                            for (int i = 1; i <= diagStep; i++)
+                            {
+                                Point p = new Point(stepPoint.X - i, stepPoint.Y);
+
+                                if (connectedGroup.Contains(p))
+                                    linePoints.Add(p);
+                                else
+                                {
+                                    fullLineOfPoints = false;
+                                    break;
+                                }
+                            }
+
+                            // If a full slice is found, add to keeper points
+                            if (fullLineOfPoints)
+                                currentPoints.AddRange(linePoints);
+                            else
+                                break;
+                        }
+                        else // Break out if right step is no longer viable
+                            break;
+
+                        // Move step one more
+                        step++;
+                    }
+                }
+
+                // Add found points to final room points
+                foreach (Point p in currentPoints)
+                {
+                    roomPoints.Add(p);
+                }
+            }
+        } // end while
+
+        return roomPoints;
+    }
+
+    /// <summary>
+    /// Find points surrounding target point in avilable map space.
+    /// </summary>
+    /// <param name="targetPoint">Point in grid space to check surrounding area of</param>
+    /// <param name="avilablePoints">Points that are on map</param>
+    /// <returns></returns>
+    private static List<Point> GetSurroundingPoints(Point targetPoint, HashSet<Point> avilablePoints)
+    {
+        List<Point> points = new List<Point>();
+
+        // -1,1. 0,1. 1,1
+        // -1,0. 0,0. 1,0
+        // -1,-1. 0,-1. 1,-1
+        for (int xOffset = -1; xOffset <= 1; xOffset++)
+        {
+            for (int yOffset = -1; yOffset <= 1; yOffset++)
+            {
+                // If target point (center) then skip
+                if (yOffset == 0 && xOffset == 0)
+                    continue;
+
+                Point p = new Point(targetPoint.X + xOffset, targetPoint.Y + yOffset);
+
+                if (avilablePoints.Contains(p))
+                    // If the point is a corner, make sure its reachable from center. No corner cutting
+                    if (xOffset == -1 && yOffset == -1
+                        || xOffset == -1 && yOffset == 1
+                        || xOffset == 1 && yOffset == -1
+                        || xOffset == 1 && yOffset == 1)
+                    {
+                        // Skip if this is a corner point
+                        continue;
+                    }
+                    else
+                        points.Add(p);
+            }
+        }
+
+        return points;
     }
 
     /// <summary>

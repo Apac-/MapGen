@@ -61,6 +61,42 @@ public class MapGen : MonoBehaviour {
 
         AddRoomsToMap(ref map, hubRooms);
         AddRoomsToMap(ref map, hallwayRooms);
+        AddLinesToMap(ref map, hallwayLines);
+        List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map);
+    }
+
+    /// <summary>
+    /// Modifies the basic map array with filler ids (1) in line positions.
+    /// </summary>
+    /// <param name="map">Basic map array</param>
+    /// <param name="lines">Lines that will be added to map as filler</param>
+    private void AddLinesToMap(ref int[][] map, List<Line> lines)
+    {
+        foreach (Line line in lines) {
+            Point p0 = new Point((int)line.p0.x, (int)line.p0.y);
+            Point p1 = new Point((int)line.p1.x, (int)line.p1.y);
+
+            // Determine if the width and height steps will go in negitive directions.
+            int negX = p0.X < p1.X ? 1 : -1;
+            int negY = p0.Y < p1.Y ? 1 : -1;
+
+            int absWidth = Mathf.Abs(p0.X - p1.X);
+            int absHeight = Mathf.Abs(p0.Y - p1.Y);
+
+            // Set the map area to 1, which is the 'filler' UID. 
+            for (int x = 0; x <= absWidth; x++) {
+                // Get the width position.
+                int xPos = p0.X + (x * negX);
+                for (int y = 0; y <= absHeight; y++) {
+                    // Get the height position
+                    int yPos = p0.Y + (y * negY);
+
+                    // If the map position is not already assigned, then add 'filler' for hallway. Set to 1. 
+                    if (map[xPos][yPos] == 0)
+                        map[xPos][yPos] = 1;
+                }
+            }
+        }
     }
 
     /// <summary>
