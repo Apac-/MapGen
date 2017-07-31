@@ -88,7 +88,8 @@ public class MapGen : MonoBehaviour {
     /// <param name="lines">Lines that will be added to map as filler</param>
     private void AddLinesToMap(ref int[][] map, List<Line> lines)
     {
-        foreach (Line line in lines) {
+        foreach (Line line in lines)
+        {
             Point p0 = new Point((int)line.p0.x, (int)line.p0.y);
             Point p1 = new Point((int)line.p1.x, (int)line.p1.y);
 
@@ -100,10 +101,13 @@ public class MapGen : MonoBehaviour {
             int absHeight = Mathf.Abs(p0.Y - p1.Y);
 
             // Set the map area to 1, which is the 'filler' UID. 
-            for (int x = 0; x <= absWidth; x++) {
+            for (int x = 0; x <= absWidth; x++)
+            {
                 // Get the width position.
                 int xPos = p0.X + (x * negX);
-                for (int y = 0; y <= absHeight; y++) {
+
+                for (int y = 0; y <= absHeight; y++)
+                {
                     // Get the height position
                     int yPos = p0.Y + (y * negY);
 
@@ -122,11 +126,15 @@ public class MapGen : MonoBehaviour {
     /// <param name="rooms">Rooms to add to map</param>
     private void AddRoomsToMap(ref int[][] map, List<MapRoom> rooms)
     {
-        foreach (MapRoom room in rooms) {
+        foreach (MapRoom room in rooms)
+        {
             int locX = room.gridLocation.X;
             int locY = room.gridLocation.Y;
-            for (int x = 0; x < room.width; x++) {
-                for (int y = 0; y < room.height; y++) {
+
+            for (int x = 0; x < room.width; x++)
+            {
+                for (int y = 0; y < room.height; y++)
+                {
                     map[locX + x][locY + y] = room.Id;
                 }
             }
@@ -144,9 +152,12 @@ public class MapGen : MonoBehaviour {
         int[][] map = new int[mapWidth][];
 
         // Zero map out
-        for (int mapX = 0; mapX < map.Length; mapX++) {
+        for (int mapX = 0; mapX < map.Length; mapX++)
+        {
             map[mapX] = new int[mapHeight];
-            for (int mapY = 0; mapY < map[mapX].Length; mapY++) {
+
+            for (int mapY = 0; mapY < map[mapX].Length; mapY++)
+            {
                 map[mapX][mapY] = 0;
             }
         }
@@ -355,9 +366,11 @@ public class MapGen : MonoBehaviour {
         int distance = 1;
 
         // Add lines, then add extra lines to create desired width of hallways.
-        while (widthAdded < sizeOfHallways) {
+        while (widthAdded < sizeOfHallways)
+        {
 
-            if (isHorizontal) { // Line is horizontal
+            if (isHorizontal) // Line is horizontal
+            { 
                 // Add line for width to positive Vertical side of line.
                 segments.Add(new Line(new Vector2(startPoint.x, startPoint.y + distance),
                                       new Vector2(endPoint.x, endPoint.y + distance)));
@@ -366,12 +379,14 @@ public class MapGen : MonoBehaviour {
                 widthAdded++;
 
                 // Add line for width to other side of line
-                if (widthAdded < sizeOfHallways) { // recheck size
+                if (widthAdded < sizeOfHallways) // recheck size
+                { 
                     segments.Add(new Line(new Vector2(startPoint.x, startPoint.y - distance),
                                           new Vector2(endPoint.x, endPoint.y - distance)));
                 }
             }
-            else { // Line is vertical
+            else // Line is vertical
+            { 
                 // Add line for width to positive Horizontal side of line.
                 segments.Add(new Line(new Vector2(startPoint.x + distance, startPoint.y),
                                       new Vector2(endPoint.x + distance, endPoint.y)));
@@ -380,7 +395,8 @@ public class MapGen : MonoBehaviour {
                 widthAdded++;
 
                 // Add line for width to other side of line
-                if (widthAdded < sizeOfHallways) { // recheck size
+                if (widthAdded < sizeOfHallways) // recheck size
+                { 
                     segments.Add(new Line(new Vector2(startPoint.x - distance, startPoint.y),
                                           new Vector2(endPoint.x - distance, endPoint.y)));
                 }
@@ -406,7 +422,8 @@ public class MapGen : MonoBehaviour {
         int height_mean = 0;
         int width_mean = 0;
 
-        foreach (MapRoom room in rooms) {
+        foreach (MapRoom room in rooms)
+        {
             height_mean += room.height;
             width_mean += room.width;
         }
@@ -415,7 +432,8 @@ public class MapGen : MonoBehaviour {
         width_mean = Mathf.RoundToInt((float)(width_mean / rooms.Count) * cutoff);
 
         List<MapRoom> hubRooms = new List<MapRoom>();
-        foreach (MapRoom room in rooms) {
+        foreach (MapRoom room in rooms)
+        {
             if (room.width > width_mean && room.height > height_mean)
                 hubRooms.Add(room);
         }
@@ -462,7 +480,7 @@ public class MapGen : MonoBehaviour {
     }
 
     // Create the foundation map rooms and physical helper rooms then wait till the phys engine seperates helpers
-    public void GenerateRooms()
+    private void GenerateRooms()
     {
         // Start fresh
         ResetGeneration();
