@@ -8,7 +8,7 @@ public class MapGen : MonoBehaviour {
 
     public MapSettings mapSettings;
 
-    private enum GenerationState { Waiting, RoomsSeperated,}
+    private enum GenerationState { Waiting, RoomsSeperated, Reset, Finished }
     private GenerationState currentState;
 
     private List<MapRoom> mapRooms;
@@ -20,6 +20,21 @@ public class MapGen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        switch (currentState)
+        {
+            case GenerationState.Waiting:
+                break;
+            case GenerationState.RoomsSeperated:
+                GenerateMap(mapRooms);
+                break;
+            case GenerationState.Reset:
+                ResetAndRegenerate();
+                break;
+            case GenerationState.Finished:
+                ResetGeneration();
+                currentState = GenerationState.Waiting;
+                break;
+        }
     }
 
     private void GenerateMap(List<MapRoom> rooms)
@@ -429,6 +444,14 @@ public class MapGen : MonoBehaviour {
         RemovePhysicalRoomObjects(this.transform);
     }
 
+    // Resets and regenerates new rooms.
+    private void ResetAndRegenerate()
+    {
+        ResetGeneration();
+
+        GenerateRooms();
+    }
+
     // Removes all physical helper room games objects
     private void RemovePhysicalRoomObjects(Transform roomHolder)
     {
@@ -441,6 +464,12 @@ public class MapGen : MonoBehaviour {
     // Create the foundation map rooms and physical helper rooms then wait till the phys engine seperates helpers
     public void GenerateRooms()
     {
+        // Start fresh
+        ResetGeneration();
+
+        // State is waiting for coroutine to finish
+        currentState = GenerationState.Waiting;
+
         mapRooms = GenerateMapRooms();
 
         GeneratePhysicalRooms(mapRooms);
@@ -473,6 +502,11 @@ public class MapGen : MonoBehaviour {
         return rooms;
     }
 
+    /// <summary>
+    /// Allows physical room objects to seperate the changes state to flag rooms as steady.
+    /// </summary>
+    /// <param name="roomHolder">Parent object where helper rooms are kept in scene.</param>
+    /// <returns></returns>
     private IEnumerator WaitTillRoomsSeperate(Transform roomHolder)
     {
         bool roomsAsleep;
@@ -500,5 +534,8 @@ public class MapGen : MonoBehaviour {
         } while (!roomsAsleep);
 
         Time.timeScale = savedTimeScale;
+
+        // Change state to move onto next step.
+        currentState = GenerationState.RoomsSeperated;
     }
 }
