@@ -63,6 +63,7 @@ public class MapGen : MonoBehaviour {
         AddRoomsToMap(ref map, hallwayRooms);
         AddLinesToMap(ref map, hallwayLines);
         List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map);
+        AddRoomsToMap(ref map, fillerRooms);
     }
 
     /// <summary>
