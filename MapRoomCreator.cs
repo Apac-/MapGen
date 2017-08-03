@@ -25,34 +25,23 @@ public class MapRoomCreator : MonoBehaviour {
     /// <summary>
     /// Creator of Map rooms in given spawn ellipsis area.
     /// </summary>
-    /// <param name="numberToCreate">Number of rooms to create</param>
-    /// <param name="spawnEllipsisWidth">Spawn ellipsis area's width</param>
-    /// <param name="spawnEllipsisHeight">Spawn ellipsis area's height</param>
-    /// <param name="meanHeight">Mean height of rooms to be created</param>
-    /// <param name="meanWidth">Mean width of rooms to be created</param>
-    /// <param name="standardDeviation">Variance in the creation of room sizes</param>
-    /// <param name="maxWidth">Maximum allowable width of created room</param>
-    /// <param name="minWidth">Minimum allowable width of created room</param>
-    /// <param name="maxHeight">Maximum allowable height of created room</param>
-    /// <param name="minHeight">Minimum allowable height of created room</param>
-    public MapRoomCreator(int numberToCreate, int spawnEllipsisWidth, int spawnEllipsisHeight,
-        int meanHeight, int meanWidth, int standardDeviation, int maxWidth, int minWidth, int maxHeight, int minHeight)
+    public MapRoomCreator(MapSettings mapSettings)
     {
-        this.numberToCreate = numberToCreate;
+        numberToCreate = mapSettings.numberOfRoomsToCreate;
 
-        this.spawnWidth = spawnEllipsisWidth;
-        this.spawnHeight = spawnEllipsisHeight;
+        spawnHeight = mapSettings.roomSpawnEllipsisAreaHeight;
+        spawnWidth = mapSettings.roomSpawnEllipsisAreaWidth;
 
-        this.meanHeight = meanHeight;
-        this.meanWidth = meanWidth;
+        meanHeight = mapSettings.roomMeanHeight;
+        meanWidth = mapSettings.roomMeanWidth;
 
-        this.deviation = standardDeviation;
+        deviation = mapSettings.roomStandardDeviation;
 
-        this.maxWidth = maxWidth;
-        this.minWdith = minWidth;
+        maxHeight = mapSettings.roomMaxHeight;
+        maxWidth = mapSettings.roomMaxWidth;
 
-        this.maxHeight = maxHeight;
-        this.minHeight = minHeight;
+        minHeight = mapSettings.roomMinHeight;
+        minWdith = mapSettings.roomMinWidth;
     }
 
     /// <summary>

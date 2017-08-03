@@ -510,10 +510,7 @@ public class MapGen : MonoBehaviour {
 
     private List<MapRoom> GenerateMapRooms()
     {
-        MapRoomCreator roomCreator = new MapRoomCreator(mapSettings.numberOfRoomsToCreate, 
-            mapSettings.roomSpawnEllipsisAreaWidth, mapSettings.roomSpawnEllipsisAreaHeight,
-            mapSettings.roomMeanHeight, mapSettings.roomMeanWidth, mapSettings.roomStandardDeviation, 
-            mapSettings.roomMaxWidth, mapSettings.roomMinWidth, mapSettings.roomMaxHeight, mapSettings.roomMinHeight);
+        MapRoomCreator roomCreator = new MapRoomCreator(mapSettings);
 
         List<MapRoom> rooms = roomCreator.CreateRooms();
 
