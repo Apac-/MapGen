@@ -492,7 +492,7 @@ public class MapGen : MonoBehaviour {
 
         GeneratePhysicalRooms(mapRooms);
 
-        StartCoroutine(WaitTillRoomsSeperate(this.transform.parent));
+        StartCoroutine(WaitTillRoomsSeperate(this.transform));
     }
 
     // Create the physical helper object to utilize the physics engine for room seperation
@@ -504,7 +504,7 @@ public class MapGen : MonoBehaviour {
             physicalRoom.GetComponent<MapRoomHolder>().mapRoom = room;
             physicalRoom.transform.position = new Vector3(room.gridLocation.X, room.gridLocation.Y);
             physicalRoom.transform.localScale = new Vector3(room.width, room.height);
-            physicalRoom.transform.SetParent(this.transform.parent, true);
+            physicalRoom.transform.SetParent(this.transform, true);
         }
     }
 
