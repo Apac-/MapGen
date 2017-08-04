@@ -13,9 +13,12 @@ public class MapGen : MonoBehaviour {
 
     private List<MapRoom> mapRooms;
 
+    private MapGenVisualDebugger visualDebugger;
+
     // Use this for initialization
     void Start () {
         currentState = GenerationState.Waiting;
+        visualDebugger = gameObject.GetComponent<MapGenVisualDebugger>();
 	}
 	
 	// Update is called once per frame
@@ -25,7 +28,9 @@ public class MapGen : MonoBehaviour {
             case GenerationState.Waiting:
                 break;
             case GenerationState.RoomsSeperated:
-                GenerateMap(mapRooms);
+                MapData mapData = GenerateMap(mapRooms);
+                if (mapData != null)
+                    visualDebugger.mapData = mapData;
                 break;
             case GenerationState.Reset:
                 ResetAndRegenerate();
@@ -46,7 +51,6 @@ public class MapGen : MonoBehaviour {
         // Re-generate if not enough hub rooms are found
         if (hubRooms.Count <= mapSettings.minAmountOfHubRooms)
         {
-            throw new NotImplementedException();
             currentState = GenerationState.Reset;
             return null;
         }
@@ -80,7 +84,7 @@ public class MapGen : MonoBehaviour {
         List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map);
         AddRoomsToMap(ref map, fillerRooms);
 
-        return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines);
+        return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines, upperRightPoint);
     }
 
     /// <summary>
