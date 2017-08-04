@@ -37,7 +37,7 @@ public class MapGen : MonoBehaviour {
         }
     }
 
-    private void GenerateMap(List<MapRoom> rooms)
+    private MapData GenerateMap(List<MapRoom> rooms)
     {
         SnapRoomLocationToGrid(this.transform);
 
@@ -48,7 +48,7 @@ public class MapGen : MonoBehaviour {
         {
             throw new NotImplementedException();
             currentState = GenerationState.Reset;
-            return;
+            return null;
         }
 
         List<Vector2> hubRoomCenterPoints = new List<Vector2>();
@@ -79,6 +79,8 @@ public class MapGen : MonoBehaviour {
         AddLinesToMap(ref map, hallwayLines);
         List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map);
         AddRoomsToMap(ref map, fillerRooms);
+
+        return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines);
     }
 
     /// <summary>
