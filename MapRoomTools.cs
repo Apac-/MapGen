@@ -205,9 +205,7 @@ public static class MapRoomTools {
                     height = tempHeight;
             }
 
-            
-            // TODO: Figure out ID pass in
-            createdRooms.Add(new MapRoom(startPoint, width, height));
+            createdRooms.Add(new MapRoom(startPoint, width, height, MapGen.MapRoomId));
         }
 
         return createdRooms;

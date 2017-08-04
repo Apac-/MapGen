@@ -6,6 +6,16 @@ using UnityEngine;
 
 public class MapGen : MonoBehaviour {
 
+    // Id to be assigned to a newly created room. 
+    private static int _mapRoomId;
+    public static int MapRoomId
+    {
+        get
+        {
+            return _mapRoomId++;
+        }
+    }
+
     public MapSettings mapSettings;
 
     private enum GenerationState { Waiting, RoomsSeperated, Reset, Finished }
@@ -464,6 +474,8 @@ public class MapGen : MonoBehaviour {
     private void ResetGeneration()
     {
         mapRooms = new List<MapRoom>();
+
+        _mapRoomId = 1;
 
         RemovePhysicalRoomObjects(this.transform);
     }
