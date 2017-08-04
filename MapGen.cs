@@ -13,6 +13,8 @@ public class MapGen : MonoBehaviour {
 
     public MapSettings mapSettings;
 
+    public GameObject physicalRoom;
+
     private enum GenerationState { Waiting, RoomsSeperated, Reset, Finished }
     private GenerationState currentState;
 
@@ -516,7 +518,7 @@ public class MapGen : MonoBehaviour {
     {
         foreach (MapRoom room in mapRooms)
         {
-            GameObject physicalRoom = new GameObject("PhysicalRoom", typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(MapRoomHolder));
+            GameObject physicalRoom = Instantiate(this.physicalRoom);
             physicalRoom.GetComponent<MapRoomHolder>().mapRoom = room;
             physicalRoom.transform.position = new Vector3(room.gridLocation.X, room.gridLocation.Y);
             physicalRoom.transform.localScale = new Vector3(room.width, room.height);
