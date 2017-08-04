@@ -6,24 +6,24 @@ using UnityEngine;
 public class MapGenVisualDebugger : MonoBehaviour {
 
     #region Change these in editor
-    public bool debugMap = false;
+    public bool debugMap;
 
-    public bool drawHallWayLines = false;
+    public bool drawHallWayLines;
     public Color hallwayLineColor;
 
     public bool drawHallwayFillerTiles;
     public Color hallwayFillerTilesColor;
 
-    public bool drawHubRooms = false;
+    public bool drawHubRooms;
     public Color hubRoomColor;
 
-    public bool drawHallwayRooms = false;
+    public bool drawHallwayRooms;
     public Color hallwayRoomColor;
 
-    public bool drawFillerRooms = false;
+    public bool drawFillerRooms;
     public Color fillerRoomColor;
 
-    public bool drawMapBounds = false;
+    public bool drawMapBounds;
     public Color mapBoundsColor;
     #endregion
 
@@ -32,12 +32,6 @@ public class MapGenVisualDebugger : MonoBehaviour {
     private List<Vector2> hallwayFillerTiles;
 
     private MapData mapData;
-
-    private void SetUpLinesToDraw()
-    {
-        mapBounds = SetBoundries(mapData.greatestPoint);
-        hallwayFillerTiles = FindHallwayFillerTiles(mapData.map);
-    }
 
     // Update is called once per frame
     void Update () {
@@ -48,6 +42,13 @@ public class MapGenVisualDebugger : MonoBehaviour {
     public void SetMapData(MapData mapData)
     {
         this.mapData = mapData;
+        SetUpLinesToDraw(this.mapData);
+    }
+
+    private void SetUpLinesToDraw(MapData mapData)
+    {
+        mapBounds = SetBoundries(mapData.greatestPoint);
+        hallwayFillerTiles = FindHallwayFillerTiles(mapData.map);
     }
 
     private void DrawDebugLines()
