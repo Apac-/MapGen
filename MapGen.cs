@@ -8,13 +8,8 @@ public class MapGen : MonoBehaviour {
 
     // Id to be assigned to a newly created room. 
     private static int _mapRoomId;
-    public static int MapRoomId
-    {
-        get
-        {
-            return _mapRoomId++;
-        }
-    }
+    // Increment and return.
+    public static int MapRoomId { get { return _mapRoomId++; } }
 
     public MapSettings mapSettings;
 
@@ -50,6 +45,24 @@ public class MapGen : MonoBehaviour {
                 currentState = GenerationState.Waiting;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Generate the foundational rooms and objects then wait for physical rooms to seperate to continue.
+    /// </summary>
+    public void Generate()
+    {
+        // Start fresh
+        ResetGeneration();
+
+        // State is waiting for coroutine to finish
+        currentState = GenerationState.Waiting;
+
+        mapRooms = GenerateMapRooms();
+
+        GeneratePhysicalRooms(mapRooms);
+
+        StartCoroutine(WaitTillRoomsSeperate(this.transform));
     }
 
     private MapData GenerateMap(List<MapRoom> rooms)
@@ -485,7 +498,7 @@ public class MapGen : MonoBehaviour {
     {
         ResetGeneration();
 
-        GenerateRooms();
+        Generate();
     }
 
     // Removes all physical helper room games objects
@@ -497,21 +510,6 @@ public class MapGen : MonoBehaviour {
         }
     }
 
-    // Create the foundation map rooms and physical helper rooms then wait till the phys engine seperates helpers
-    private void GenerateRooms()
-    {
-        // Start fresh
-        ResetGeneration();
-
-        // State is waiting for coroutine to finish
-        currentState = GenerationState.Waiting;
-
-        mapRooms = GenerateMapRooms();
-
-        GeneratePhysicalRooms(mapRooms);
-
-        StartCoroutine(WaitTillRoomsSeperate(this.transform));
-    }
 
     // Create the physical helper object to utilize the physics engine for room seperation
     private void GeneratePhysicalRooms(List<MapRoom> mapRooms)
