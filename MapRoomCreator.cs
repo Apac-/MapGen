@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapRoomCreator : MonoBehaviour {
+public class MapRoomCreator {
     // Id assigned to newly created rooms. Incremented on each assignment
     private int id;
 
