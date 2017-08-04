@@ -29,42 +29,39 @@ public class MapGenVisualDebugger : MonoBehaviour {
 
     Vector2[] mapBounds = new Vector2[2];
 
-    private MapData _mapData;
     private List<Vector2> hallwayFillerTiles;
 
-    public MapData mapData
-    {
-        set
-        {
-            _mapData = value;
-            SetUpLinesToDraw();
-        }
-    }
+    private MapData mapData;
 
     private void SetUpLinesToDraw()
     {
-        mapBounds = SetBoundries(_mapData.greatestPoint);
-        hallwayFillerTiles = FindHallwayFillerTiles(_mapData.map);
+        mapBounds = SetBoundries(mapData.greatestPoint);
+        hallwayFillerTiles = FindHallwayFillerTiles(mapData.map);
     }
 
     // Update is called once per frame
     void Update () {
-        if (debugMap)
+        if (debugMap && mapData != null)
             DrawDebugLines();
 	}
+
+    public void SetMapData(MapData mapData)
+    {
+        this.mapData = mapData;
+    }
 
     private void DrawDebugLines()
     {
         if (drawHallWayLines)
-            DrawLines(_mapData.hallwayLines, hallwayLineColor);
+            DrawLines(mapData.hallwayLines, hallwayLineColor);
         if (drawHallwayFillerTiles)
             DrawIndividualTiles(hallwayFillerTiles, hallwayFillerTilesColor);
         if (drawHubRooms)
-            DrawRooms(_mapData.hubRooms, hubRoomColor);
+            DrawRooms(mapData.hubRooms, hubRoomColor);
         if (drawHallwayRooms)
-            DrawRooms(_mapData.hallwayRooms, hallwayRoomColor);
+            DrawRooms(mapData.hallwayRooms, hallwayRoomColor);
         if (drawFillerRooms)
-            DrawRooms(_mapData.fillerRooms, fillerRoomColor);
+            DrawRooms(mapData.fillerRooms, fillerRoomColor);
         if (drawMapBounds)
             DrawMapBounds(mapBounds, mapBoundsColor);
     }
