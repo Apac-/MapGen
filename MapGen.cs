@@ -14,6 +14,8 @@ public class MapGen : MonoBehaviour {
 
     private List<MapRoom> mapRooms;
 
+    private MapRoomCreator mapRoomCreator;
+
     private MapGenVisualDebugger visualDebugger;
 
     // Use this for initialization
@@ -54,7 +56,7 @@ public class MapGen : MonoBehaviour {
         // State is waiting for coroutine to finish
         currentState = GenerationState.Waiting;
 
-        mapRooms = GenerateMapRooms();
+        mapRooms = mapRoomCreator.CreateRooms();
 
         GeneratePhysicalRooms(mapRooms);
 
@@ -100,7 +102,7 @@ public class MapGen : MonoBehaviour {
         AddRoomsToMap(ref map, hubRooms);
         AddRoomsToMap(ref map, hallwayRooms);
         AddLinesToMap(ref map, hallwayLines);
-        List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map);
+        List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map, mapRoomCreator);
         AddRoomsToMap(ref map, fillerRooms);
 
         currentState = GenerationState.Finished;
@@ -417,6 +419,8 @@ public class MapGen : MonoBehaviour {
     {
         mapRooms = new List<MapRoom>();
 
+        mapRoomCreator = new MapRoomCreator(mapSettings);
+
         RemovePhysicalRoomObjects(this.transform);
     }
 
@@ -449,15 +453,6 @@ public class MapGen : MonoBehaviour {
             physicalRoom.transform.localScale = new Vector3(room.width, room.height);
             physicalRoom.transform.SetParent(this.transform, true);
         }
-    }
-
-    private List<MapRoom> GenerateMapRooms()
-    {
-        MapRoomCreator roomCreator = new MapRoomCreator(mapSettings);
-
-        List<MapRoom> rooms = roomCreator.CreateRooms();
-
-        return rooms;
     }
 
     /// <summary>
