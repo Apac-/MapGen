@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "Helpers/MapSettings", order = 1)]
+[CreateAssetMenu(fileName = "MapSetting", menuName = "MapGen/MapSettings", order = 1)]
 public class MapSettings : ScriptableObject {
     // Used in adding more connecting paths after the min amount is found to connect all rooms.
     public float percentOfRoomConnectionAboveMinPath;
