@@ -71,7 +71,7 @@ public class MapGen : MonoBehaviour {
     {
         SnapRoomLocationToGrid(this.transform);
 
-        List<MapRoom> hubRooms = GetHubRooms(rooms, mapSettings.hubRoomCutoff);
+        List<MapRoom> hubRooms = MapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
 
         // Re-generate if not enough hub rooms are found
         if (hubRooms.Count <= mapSettings.minAmountOfHubRooms)
@@ -90,7 +90,7 @@ public class MapGen : MonoBehaviour {
 
         List<Line> hallwayLines = CreateHallwayLinesFromSegments(connectingLineSegments, hubRooms);
 
-        List<MapRoom> hallwayRooms = FindHallwayRoomsBetweenHubRooms(hallwayLines, hubRooms);
+        List<MapRoom> hallwayRooms = MapRoomTools.FindHallwayRooms(hallwayLines, hubRooms);
 
         Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
         Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
@@ -259,45 +259,6 @@ public class MapGen : MonoBehaviour {
     }
 
     /// <summary>
-    /// Use hallway lines to create raycasts that will be used to find all unused rooms between hubrooms.
-    /// </summary>
-    /// <param name="hallwayLines">Lines that run from one hub room to another.</param>
-    /// <param name="hubRooms">Main 'hub' rooms already discoverd.</param>
-    /// <returns></returns>
-    private List<MapRoom> FindHallwayRoomsBetweenHubRooms(List<Line> hallwayLines, List<MapRoom> hubRooms)
-    {
-        List<MapRoom> foundRooms = new List<MapRoom>();
-
-        foreach (Line line in hallwayLines)
-        {
-            // Find heading 
-            Vector2 rayHeading = line.p0 - line.p1;
-
-            // Find distance
-            float rayDistance = rayHeading.magnitude;
-
-            // Find direction
-            Vector2 rayDirection = rayHeading / rayDistance;
-
-            // Throw 2d Raycast
-            RaycastHit2D[] roomsHit = Physics2D.RaycastAll(line.p1, rayDirection, rayDistance);
-
-            // Check found rooms vs Hub rooms; Add to hallwayRooms if not a hub room.
-            for (int i = 0; i < roomsHit.Length; i++)
-            {
-                MapRoom room = roomsHit[i].transform.GetComponent<MapRoomHolder>().mapRoom;
-
-                if (!hubRooms.Contains(room) && !foundRooms.Contains(room))
-                {
-                    foundRooms.Add(room);
-                }
-            }
-        }
-
-        return foundRooms;
-    }
-
-    /// <summary>
     /// Creates lines between rooms connected by the delaunay voroni graph line segments.
     /// </summary>
     /// <param name="segments">Graph line segments</param>
@@ -442,36 +403,6 @@ public class MapGen : MonoBehaviour {
         }
 
         return segments;
-    }
-
-    /// <summary>
-    /// Finds and returns all rooms that are large enough to be main or 'hub' rooms.
-    /// </summary>
-    /// <param name="rooms">Rooms to check for hubs</param>
-    /// <param name="cutoff">Adjustment to further limit allowed lower size of hub rooms</param>
-    /// <returns></returns>
-    private List<MapRoom> GetHubRooms(List<MapRoom> rooms, float cutoff)
-    {
-        int height_mean = 0;
-        int width_mean = 0;
-
-        foreach (MapRoom room in rooms)
-        {
-            height_mean += room.height;
-            width_mean += room.width;
-        }
-
-        height_mean = Mathf.RoundToInt((float)(height_mean / rooms.Count) * cutoff);
-        width_mean = Mathf.RoundToInt((float)(width_mean / rooms.Count) * cutoff);
-
-        List<MapRoom> hubRooms = new List<MapRoom>();
-        foreach (MapRoom room in rooms)
-        {
-            if (room.width > width_mean && room.height > height_mean)
-                hubRooms.Add(room);
-        }
-
-        return hubRooms;
     }
 
     /// <summary>
