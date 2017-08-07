@@ -27,4 +27,22 @@ public class MapRoom {
 
         roomType = RoomType.Empty;
     }
+
+    /// <summary>
+    /// Gets all points in grid space that this room contains.
+    /// </summary>
+    /// <returns></returns>
+    public List<Point> ContainedPoints()
+    {
+        List<Point> points = new List<Point>();
+        for (int w = 0; w < width; w++)
+        {
+            for (int h = 0; h < height; h++)
+            {
+                points.Add(new Point(gridLocation.X + w, gridLocation.Y + h));
+            }
+        }
+
+        return points;
+    }
 }
