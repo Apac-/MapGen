@@ -272,6 +272,7 @@ public class MapGen : MonoBehaviour {
     {
         List<Line> hallwayLines = new List<Line>();
 
+        // Buffer size to make hallway lines within room boundries
         int hallwayBuffer = mapSettings.sizeOfHallways / 2;
 
         foreach (LineSegment segment in segments)
@@ -304,8 +305,10 @@ public class MapGen : MonoBehaviour {
             }
             else // Right angle bend in hallway
             {
+                // Meeting point between lines
                 endPoint = new Vector2(r0.centerPoint.x, r1.centerPoint.y);
 
+                // Is bend in the 'north east' quad?
                 bool northEastBend = false;
                 if (r0.centerPoint.x > r1.centerPoint.x && r0.centerPoint.y < r1.centerPoint.y)
                     northEastBend = true;
