@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -55,7 +56,7 @@ public class MapRoomCreator {
         List<MapRoom> rooms = new List<MapRoom>();
         for (int i = 0; i < numberToCreate; i++)
         {
-            rooms.Add(CreateRoom());
+            rooms.Add(CreateRoomInSpawnArea());
         }
 
         return rooms;
@@ -65,7 +66,7 @@ public class MapRoomCreator {
     /// Create a room inside a given spawn area.
     /// </summary>
     /// <returns></returns>
-    private MapRoom CreateRoom()
+    private MapRoom CreateRoomInSpawnArea()
     {
         Vector2 randomPointInElipsis = MathHelpers.RandomPointInElipsis(spawnWidth, spawnHeight);
 
@@ -76,6 +77,18 @@ public class MapRoomCreator {
         int width = MathHelpers.FindValueInDistributionRange(meanWidth, deviation, maxWidth, minWdith);
         int height = MathHelpers.FindValueInDistributionRange(meanHeight, deviation, maxHeight, minHeight);
 
+        return new MapRoom(loc, width, height, id);
+    }
+
+    /// <summary>
+    /// Creates a map room at specified point.
+    /// </summary>
+    /// <param name="loc">Start location</param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <returns>Newly created maproom at point with id</returns>
+    public MapRoom CreateRoom(Point loc, int width, int height)
+    {
         return new MapRoom(loc, width, height, id);
     }
 }

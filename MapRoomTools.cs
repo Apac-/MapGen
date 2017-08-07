@@ -106,11 +106,11 @@ public static class MapRoomTools {
     }
 
     /// <summary>
-    /// Creates map rooms from filler space in a basic map. Filler space is denoted as 1.
+    /// Creates map rooms from filler space in a basic map.
     /// </summary>
     /// <param name="map">Basic map 2d array</param>
     /// <returns></returns>
-    public static List<MapRoom> CreateRoomsFromFiller(int[][] map)
+    public static List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, MapRoomCreator mapRoomCreator)
     {
         // Look for all 'tiles' that are ID of 1 (filler).
         HashSet<Point> fillerPoints = new HashSet<Point>();
@@ -118,7 +118,7 @@ public static class MapRoomTools {
         {
             for (int y = 0; y < map[x].Length; y++)
             {
-                if (map[x][y] == 1)
+                if (map[x][y] == RoomType.Filler)
                     fillerPoints.Add(new Point(x, y));
             }
         }
@@ -166,7 +166,12 @@ public static class MapRoomTools {
             List<HashSet<Point>> seperatedRooms = FindRoomsInGroup(fillerGroup);
 
             // Create a collection of dungeon rooms from hashSets of points
-            rooms.AddRange(CreateRoomsFromHashSets(seperatedRooms));
+            rooms.AddRange(CreateRoomsFromHashSets(seperatedRooms, mapRoomCreator));
+        }
+
+        foreach (MapRoom room in rooms)
+        {
+            room.roomType = RoomType.Filler;
         }
 
         return rooms;
@@ -177,7 +182,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="rooms">Pre-processed sets of points that make up square or rectangle room groupings</param>
     /// <returns></returns>
-    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms)
+    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, MapRoomCreator mapRoomCreator)
     {
         List<MapRoom> createdRooms = new List<MapRoom>();
 
@@ -204,8 +209,7 @@ public static class MapRoomTools {
                 if (tempHeight > height)
                     height = tempHeight;
             }
-
-            createdRooms.Add(new MapRoom(startPoint, width, height, MapGen.MapRoomId));
+            createdRooms.Add(mapRoomCreator.CreateRoom(startPoint, width, height));
         }
 
         return createdRooms;

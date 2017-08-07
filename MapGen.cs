@@ -5,12 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapGen : MonoBehaviour {
-
-    // Id to be assigned to a newly created room. 
-    private static int _mapRoomId;
-    // Increment and return.
-    public static int MapRoomId { get { return _mapRoomId++; } }
-
     public MapSettings mapSettings;
 
     public GameObject physicalRoom;
@@ -101,7 +95,7 @@ public class MapGen : MonoBehaviour {
 
         int mapWidth = upperRightPoint.X - bottomLeftPoint.X;
         int mapHeight = upperRightPoint.Y - bottomLeftPoint.Y;
-        int[][] map = CreateBaseMap(mapWidth, mapHeight);
+        RoomType[][] map = CreateBaseMap(mapWidth, mapHeight);
 
         AddRoomsToMap(ref map, hubRooms);
         AddRoomsToMap(ref map, hallwayRooms);
@@ -119,7 +113,7 @@ public class MapGen : MonoBehaviour {
     /// </summary>
     /// <param name="map">Basic map array</param>
     /// <param name="lines">Lines that will be added to map as filler</param>
-    private void AddLinesToMap(ref int[][] map, List<Line> lines)
+    private void AddLinesToMap(ref RoomType[][] map, List<Line> lines)
     {
         foreach (Line line in lines)
         {
@@ -145,8 +139,8 @@ public class MapGen : MonoBehaviour {
                     int yPos = p0.Y + (y * negY);
 
                     // If the map position is not already assigned, then add 'filler' for hallway. Set to 1. 
-                    if (map[xPos][yPos] == 0)
-                        map[xPos][yPos] = 1;
+                    if (map[xPos][yPos] == RoomType.Empty)
+                        map[xPos][yPos] = RoomType.Filler;
                 }
             }
         }
@@ -157,7 +151,7 @@ public class MapGen : MonoBehaviour {
     /// </summary>
     /// <param name="map">Basic map array</param>
     /// <param name="rooms">Rooms to add to map</param>
-    private void AddRoomsToMap(ref int[][] map, List<MapRoom> rooms)
+    private void AddRoomsToMap(ref RoomType[][] map, List<MapRoom> rooms)
     {
         foreach (MapRoom room in rooms)
         {
@@ -168,7 +162,7 @@ public class MapGen : MonoBehaviour {
             {
                 for (int y = 0; y < room.height; y++)
                 {
-                    map[locX + x][locY + y] = room.Id;
+                    map[locX + x][locY + y] = room.roomType;
                 }
             }
         }
@@ -180,18 +174,18 @@ public class MapGen : MonoBehaviour {
     /// <param name="mapWidth">Width of the used map area.</param>
     /// <param name="mapHeight">Height of the used map area.</param>
     /// <returns></returns>
-    private int[][] CreateBaseMap(int mapWidth, int mapHeight)
+    private RoomType[][] CreateBaseMap(int mapWidth, int mapHeight)
     {
-        int[][] map = new int[mapWidth][];
+        RoomType[][] map = new RoomType[mapWidth][];
 
         // Zero map out
         for (int mapX = 0; mapX < map.Length; mapX++)
         {
-            map[mapX] = new int[mapHeight];
+            map[mapX] = new RoomType[mapHeight];
 
             for (int mapY = 0; mapY < map[mapX].Length; mapY++)
             {
-                map[mapX][mapY] = 0;
+                map[mapX][mapY] = RoomType.Empty;
             }
         }
 
@@ -422,8 +416,6 @@ public class MapGen : MonoBehaviour {
     private void ResetGeneration()
     {
         mapRooms = new List<MapRoom>();
-
-        _mapRoomId = 1;
 
         RemovePhysicalRoomObjects(this.transform);
     }
