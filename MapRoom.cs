@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapRoom {
+    public RoomType roomType;
+
     public int Id { get; private set; }
 
     // Location is bottom left of the room
@@ -22,5 +24,7 @@ public class MapRoom {
         this.width = width;
         this.height = height;
         gridLocation = location;
+
+        roomType = RoomType.Empty;
     }
 }
