@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapRoomCreator {
     // Id assigned to newly created rooms. Incremented on each assignment
-    private int _id = 2;
+    private int _id = 0;
     private int id { get { return _id++; } }
 
     private int numberToCreate;
