@@ -57,14 +57,14 @@ public class MapGenVisualDebugger : MonoBehaviour {
             DrawLines(mapData.hallwayLines, hallwayLineColor);
         if (drawHallwayFillerTiles)
             DrawIndividualTiles(hallwayFillerTiles, hallwayFillerTilesColor);
-        if (drawHubRooms)
-            DrawRooms(mapData.hubRooms, hubRoomColor);
-        if (drawHallwayRooms)
-            DrawRooms(mapData.hallwayRooms, hallwayRoomColor);
-        if (drawFillerRooms)
-            DrawRooms(mapData.fillerRooms, fillerRoomColor);
         if (drawMapBounds)
             DrawMapBounds(mapBounds, mapBoundsColor);
+        if (drawFillerRooms)
+            DrawRooms(mapData.fillerRooms, fillerRoomColor);
+        if (drawHallwayRooms)
+            DrawRooms(mapData.hallwayRooms, hallwayRoomColor);
+        if (drawHubRooms)
+            DrawRooms(mapData.hubRooms, hubRoomColor);
     }
 
     private void DrawIndividualTiles(List<Vector2> tiles, Color color)
@@ -104,7 +104,7 @@ public class MapGenVisualDebugger : MonoBehaviour {
         }
     }
 
-    private List<Vector2> FindHallwayFillerTiles(int[][] map)
+    private List<Vector2> FindHallwayFillerTiles(RoomType[][] map)
     {
         List<Vector2> fillerTiles = new List<Vector2>();
 
@@ -112,7 +112,8 @@ public class MapGenVisualDebugger : MonoBehaviour {
         {
             for (int height = 0; height < map[width].Length; height++)
             {
-                fillerTiles.Add(new Vector2(width, height));
+                if (map[width][height] == RoomType.Filler)
+                    fillerTiles.Add(new Vector2(width, height));
             }
         }
 
