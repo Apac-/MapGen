@@ -90,14 +90,17 @@ public class MapGen : MonoBehaviour {
 
         Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
         Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
+        Debug.Log("Bottom left: " + bottomLeftPoint + " || Up right: " + upperRightPoint);
 
-        hubRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
-        hallwayRooms.OffsetMaproomGridLocationsToNewMapOrigin(bottomLeftPoint);
-        hallwayLines = LineTools.OffsetLinesToNewMapOrigin(hallwayLines, bottomLeftPoint);
+
+        hubRooms.TranslateWorldToGridLocation(bottomLeftPoint);
+        hallwayRooms.TranslateWorldToGridLocation(bottomLeftPoint);
+        hallwayLines = LineTools.TranslateWorldToGridLocation(hallwayLines, bottomLeftPoint);
 
         int mapWidth = upperRightPoint.X - bottomLeftPoint.X;
         int mapHeight = upperRightPoint.Y - bottomLeftPoint.Y;
         RoomType[][] map = CreateBaseMap(mapWidth, mapHeight);
+        Point upperRightPointInGridSpace = new Point(mapWidth, mapHeight);
 
         AddRoomsToMap(ref map, hubRooms);
         AddRoomsToMap(ref map, hallwayRooms);
@@ -107,7 +110,7 @@ public class MapGen : MonoBehaviour {
 
         currentState = GenerationState.Finished;
 
-        return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines, upperRightPoint);
+        return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines, upperRightPointInGridSpace);
     }
 
     /// <summary>
