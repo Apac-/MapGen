@@ -63,6 +63,11 @@ public class MapGen : MonoBehaviour {
         StartCoroutine(WaitTillRoomsSeperate(this.transform));
     }
 
+    /// <summary>
+    /// Used after physical rooms have seperated (touching but not overlapping) to create map data from their locations.
+    /// </summary>
+    /// <param name="rooms">Rooms that have been seperated (not overlapping)</param>
+    /// <returns></returns>
     private MapData GenerateMap(List<MapRoom> rooms)
     {
         SnapRoomLocationToGrid(this.transform);
