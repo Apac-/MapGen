@@ -274,10 +274,6 @@ public class MapGen : MonoBehaviour {
 
         int hallwayBuffer = mapSettings.sizeOfHallways / 2;
 
-        // Switch that changes up the direction of hall way drawing.
-        // Makes for a better visual on end product.
-        bool switchDirectionOfLines = false; 
-
         foreach (LineSegment segment in segments)
         {
             MapRoom r0;
@@ -308,32 +304,17 @@ public class MapGen : MonoBehaviour {
             }
             else // Right angle bend in hallway
             {
-                int lineAdjustmentY = r0.centerPoint.y > r1.centerPoint.y ? 1 : -1;
-                int lineAdjustmentX = r0.centerPoint.x > r1.centerPoint.x ? 1 : -1;
+                endPoint = new Vector2(r0.centerPoint.x, r1.centerPoint.y);
 
-                if (switchDirectionOfLines)
-                {
-                    startPoint = new Vector2(r0.centerPoint.x + lineAdjustmentX, r0.centerPoint.y);
-                    endPoint = new Vector2(r1.centerPoint.x - lineAdjustmentX, r0.centerPoint.y);
-                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, true));
+                bool northEastBend = false;
+                if (r0.centerPoint.x > r1.centerPoint.x && r0.centerPoint.y < r1.centerPoint.y)
+                    northEastBend = true;
 
-                    startPoint = new Vector2(r1.centerPoint.x, r1.centerPoint.y - lineAdjustmentY);
-                    endPoint = new Vector2(r1.centerPoint.x, r0.centerPoint.y + lineAdjustmentY);
-                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false));
-                }
-                else
-                {
-                    startPoint = new Vector2(r0.centerPoint.x, r0.centerPoint.y + lineAdjustmentY);
-                    endPoint = new Vector2(r0.centerPoint.x, r1.centerPoint.y - lineAdjustmentY);
-                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false));
+                startPoint = new Vector2(r0.centerPoint.x, r0.centerPoint.y);
+                hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false, northEastBend));
 
-                    startPoint = new Vector2(r1.centerPoint.x - lineAdjustmentX, r1.centerPoint.y);
-                    endPoint = new Vector2(r0.centerPoint.x + lineAdjustmentX, r1.centerPoint.y);
-                    hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, true));
-                }
-
-                // Flip the line direciton.
-                switchDirectionOfLines = !switchDirectionOfLines;
+                startPoint = new Vector2(r1.centerPoint.x, r1.centerPoint.y);
+                hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, true, northEastBend));
             }
         }
 
@@ -349,8 +330,9 @@ public class MapGen : MonoBehaviour {
     /// <param name="r1">Room 2</param>
     /// <param name="sizeOfHallways">The size of the hallway to make</param>
     /// <param name="isHorizontal">Is the line horizontal or vertical?</param>
+    /// <param name="bendInNorthEast">Is the right angle bend 'North East' in relation to the two rooms?</param>
     /// <returns></returns>
-    private List<Line> CreateHallwayLinesOfSetWidth(Vector2 startPoint, Vector2 endPoint, int sizeOfHallways, bool isHorizontal) {
+    private List<Line> CreateHallwayLinesOfSetWidth(Vector2 startPoint, Vector2 endPoint, int sizeOfHallways, bool isHorizontal, bool bendInNorthEast = false) {
         List<Line> segments = new List<Line>();
 
         // Add base line
@@ -368,35 +350,69 @@ public class MapGen : MonoBehaviour {
         {
 
             if (isHorizontal) // Line is horizontal
-            { 
-                // Add line for width to positive Vertical side of line.
-                segments.Add(new Line(new Vector2(startPoint.x, startPoint.y + distance),
-                                      new Vector2(endPoint.x, endPoint.y + distance)));
+            {
+                int bendOffset = widthAdded;
+                if (bendInNorthEast)
+                {
+                    segments.Add(new Line(new Vector2(startPoint.x, startPoint.y + distance),
+                                          new Vector2(endPoint.x + bendOffset, endPoint.y + distance)));
+                }
+                else
+                {
+                    // Add line for width to positive Vertical side of line.
+                    segments.Add(new Line(new Vector2(startPoint.x, startPoint.y + distance),
+                                          new Vector2(endPoint.x, endPoint.y + distance)));
+                }
 
                 // Step width
                 widthAdded++;
 
                 // Add line for width to other side of line
                 if (widthAdded < sizeOfHallways) // recheck size
-                { 
-                    segments.Add(new Line(new Vector2(startPoint.x, startPoint.y - distance),
-                                          new Vector2(endPoint.x, endPoint.y - distance)));
+                {
+                    if (bendInNorthEast)
+                    {
+                        segments.Add(new Line(new Vector2(startPoint.x, startPoint.y + distance),
+                                              new Vector2(endPoint.x - bendOffset, endPoint.y + distance)));
+                    }
+                    else
+                    {
+                        segments.Add(new Line(new Vector2(startPoint.x, startPoint.y - distance),
+                                              new Vector2(endPoint.x, endPoint.y - distance)));
+                    }
                 }
             }
             else // Line is vertical
-            { 
-                // Add line for width to positive Horizontal side of line.
-                segments.Add(new Line(new Vector2(startPoint.x + distance, startPoint.y),
-                                      new Vector2(endPoint.x + distance, endPoint.y)));
+            {
+                int bendOffset = widthAdded;
+                if (bendInNorthEast)
+                {
+                    segments.Add(new Line(new Vector2(startPoint.x + distance, startPoint.y),
+                                          new Vector2(endPoint.x + distance, endPoint.y + bendOffset)));
+                }
+                else
+                {
+                    // Add line for width to positive Horizontal side of line.
+                    segments.Add(new Line(new Vector2(startPoint.x + distance, startPoint.y),
+                                          new Vector2(endPoint.x + distance, endPoint.y)));
+                }
 
                 // Step width
                 widthAdded++;
 
                 // Add line for width to other side of line
                 if (widthAdded < sizeOfHallways) // recheck size
-                { 
-                    segments.Add(new Line(new Vector2(startPoint.x - distance, startPoint.y),
-                                          new Vector2(endPoint.x - distance, endPoint.y)));
+                {
+                    if (bendInNorthEast)
+                    {
+                        segments.Add(new Line(new Vector2(startPoint.x + distance, startPoint.y),
+                                              new Vector2(endPoint.x + distance, endPoint.y - bendOffset)));
+                    }
+                    else
+                    {
+                        segments.Add(new Line(new Vector2(startPoint.x - distance, startPoint.y),
+                                              new Vector2(endPoint.x - distance, endPoint.y)));
+                    }
                 }
             }
 
