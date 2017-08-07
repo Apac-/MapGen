@@ -109,6 +109,8 @@ public class MapGen : MonoBehaviour {
         List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map);
         AddRoomsToMap(ref map, fillerRooms);
 
+        currentState = GenerationState.Finished;
+
         return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines, upperRightPoint);
     }
 
