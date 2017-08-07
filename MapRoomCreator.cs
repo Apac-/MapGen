@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class MapRoomCreator {
     // Id assigned to newly created rooms. Incremented on each assignment
-    private int id;
+    private int _id = 2;
+    private int id { get { return _id++; } }
 
     private int numberToCreate;
 
@@ -75,6 +76,6 @@ public class MapRoomCreator {
         int width = MathHelpers.FindValueInDistributionRange(meanWidth, deviation, maxWidth, minWdith);
         int height = MathHelpers.FindValueInDistributionRange(meanHeight, deviation, maxHeight, minHeight);
 
-        return new MapRoom(loc, width, height, id++);
+        return new MapRoom(loc, width, height, id);
     }
 }
