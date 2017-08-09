@@ -110,7 +110,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="map">Basic map 2d array</param>
     /// <returns></returns>
-    public static List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, MapRoomCreator mapRoomCreator)
+    public static List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, MapRoomFactory mapRoomCreator)
     {
         // Look for all 'tiles' that are ID of 1 (filler).
         HashSet<Point> fillerPoints = new HashSet<Point>();
@@ -182,7 +182,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="rooms">Pre-processed sets of points that make up square or rectangle room groupings</param>
     /// <returns></returns>
-    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, MapRoomCreator mapRoomCreator)
+    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, MapRoomFactory mapRoomCreator)
     {
         List<MapRoom> createdRooms = new List<MapRoom>();
 

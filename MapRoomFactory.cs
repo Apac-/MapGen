@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapRoomCreator {
+public class MapRoomFactory : IMapRoomFactory
+{
     // Id assigned to newly created rooms. Incremented on each assignment
     private int _id = 0;
     private int id { get { return _id++; } }
@@ -25,25 +26,27 @@ public class MapRoomCreator {
     private int spawnWidth;
 
     /// <summary>
-    /// Creator of Map rooms in given spawn ellipsis area.
+    /// Sets or updates the room creator with new settings.
+    /// Needs to be called before any creation calls.
     /// </summary>
-    public MapRoomCreator(MapSettings mapSettings)
+    /// <param name="settings"></param>
+    public void UpdateSettings(MapSettings settings)
     {
-        numberToCreate = mapSettings.numberOfRoomsToCreate;
+        numberToCreate = settings.numberOfRoomsToCreate;
 
-        spawnHeight = mapSettings.roomSpawnEllipsisAreaHeight;
-        spawnWidth = mapSettings.roomSpawnEllipsisAreaWidth;
+        spawnHeight = settings.roomSpawnEllipsisAreaHeight;
+        spawnWidth = settings.roomSpawnEllipsisAreaWidth;
 
-        meanHeight = mapSettings.roomMeanHeight;
-        meanWidth = mapSettings.roomMeanWidth;
+        meanHeight = settings.roomMeanHeight;
+        meanWidth = settings.roomMeanWidth;
 
-        deviation = mapSettings.roomStandardDeviation;
+        deviation = settings.roomStandardDeviation;
 
-        maxHeight = mapSettings.roomMaxHeight;
-        maxWidth = mapSettings.roomMaxWidth;
+        maxHeight = settings.roomMaxHeight;
+        maxWidth = settings.roomMaxWidth;
 
-        minHeight = mapSettings.roomMinHeight;
-        minWdith = mapSettings.roomMinWidth;
+        minHeight = settings.roomMinHeight;
+        minWdith = settings.roomMinWidth;
     }
 
     /// <summary>
