@@ -7,5 +7,5 @@ public interface IPhysicalMapRoomTools
 
     void RemovePhysicalRooms(Transform parent);
 
-    void SnapMapRoomLocationToPhysicalRoomLocation(Transform roomHolder)
+    void SnapMapRoomLocationToPhysicalRoomLocation(Transform roomHolder);
 }
