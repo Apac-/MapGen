@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MapRoomTools {
+public class MapRoomTools : IMapRoomTools
+{
 
-    public static Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1)
+    public Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1)
     {
         Point r0c = r0.centerPoint;
         Point r1c = r1.centerPoint;
@@ -21,7 +22,7 @@ public static class MapRoomTools {
     /// <param name="r1">Second room</param>
     /// <param name="buffer">Makes sure the point isn't directly on a room boundary</param>
     /// <returns></returns>
-    public static bool IsPointBetweenXBoundariesOfGivenRooms(Point midPoint, MapRoom r0, MapRoom r1, int buffer) {
+    public bool IsPointBetweenXBoundariesOfGivenRooms(Point midPoint, MapRoom r0, MapRoom r1, int buffer) {
         if (midPoint.X >= r0.gridLocation.X + buffer && midPoint.X <= r0.endPoint.X - buffer)
         {
             if (midPoint.X >= r1.gridLocation.X + buffer && midPoint.X <= r1.endPoint.X - buffer)
@@ -41,7 +42,7 @@ public static class MapRoomTools {
     /// <param name="r1">Second room</param>
     /// <param name="buffer">Makes sure the point isn't directly on a room boundary</param>
     /// <returns></returns>
-    public static bool IsPointBetweenYBoundariesOfGivenRooms(Point midPoint, MapRoom r0, MapRoom r1, int buffer)
+    public bool IsPointBetweenYBoundariesOfGivenRooms(Point midPoint, MapRoom r0, MapRoom r1, int buffer)
     {
         if (midPoint.Y >= r0.gridLocation.Y + buffer && midPoint.Y <= r0.endPoint.Y - buffer)
         {
@@ -59,7 +60,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="lines"></param>
     /// <returns></returns>
-    internal static Point FindGreatestPointInHallways(List<Line> lines)
+    internal Point FindGreatestPointInHallways(List<Line> lines)
     {
         int greatestX = 0;
         int greatestY = 0;
@@ -110,7 +111,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="map">Basic map 2d array</param>
     /// <returns></returns>
-    public static List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, IMapRoomFactory roomFactory)
+    public List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, IMapRoomFactory roomFactory)
     {
         // Look for all 'tiles' that are ID of 1 (filler).
         HashSet<Point> fillerPoints = new HashSet<Point>();
@@ -182,7 +183,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="rooms">Pre-processed sets of points that make up square or rectangle room groupings</param>
     /// <returns></returns>
-    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, IMapRoomFactory roomFactory)
+    private List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, IMapRoomFactory roomFactory)
     {
         List<MapRoom> createdRooms = new List<MapRoom>();
 
@@ -220,7 +221,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="connectedGroup">connected point grouping</param>
     /// <returns></returns>
-    private static List<HashSet<Point>> FindRoomsInGroup(HashSet<Point> connectedGroup)
+    private List<HashSet<Point>> FindRoomsInGroup(HashSet<Point> connectedGroup)
     {
         HashSet<Point> unusedPoints = connectedGroup;
 
@@ -248,7 +249,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="connectedGroup">Avilable points to find room in.</param>
     /// <returns></returns>
-    private static HashSet<Point> FindRoomInGroup(HashSet<Point> connectedGroup)
+    private HashSet<Point> FindRoomInGroup(HashSet<Point> connectedGroup)
     {
         // Init start point to large number, used later to find lower point.
         Point startPoint = new Point(100000, 100000);
@@ -439,7 +440,7 @@ public static class MapRoomTools {
     /// <param name="targetPoint">Point in grid space to check surrounding area of</param>
     /// <param name="avilablePoints">Points that are on map</param>
     /// <returns></returns>
-    private static List<Point> GetSurroundingPoints(Point targetPoint, HashSet<Point> avilablePoints)
+    private List<Point> GetSurroundingPoints(Point targetPoint, HashSet<Point> avilablePoints)
     {
         List<Point> points = new List<Point>();
 
@@ -479,7 +480,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="lines"></param>
     /// <returns></returns>
-    internal static Point FindLowestPointInHallways(List<Line> lines)
+    internal Point FindLowestPointInHallways(List<Line> lines)
     {
         int lowestX = 0;
         int lowestY = 0;
@@ -530,7 +531,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="rooms"></param>
     /// <returns></returns>
-    internal static Point FindGreatestPointInRooms(List<MapRoom> rooms)
+    internal Point FindGreatestPointInRooms(List<MapRoom> rooms)
     {
         int greatestX = 0;
         int greatestY = 0;
@@ -559,7 +560,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="rooms"></param>
     /// <returns></returns>
-    public static Point FindLowestPointInRooms(List<MapRoom> rooms)
+    public Point FindLowestPointInRooms(List<MapRoom> rooms)
     {
         int lowestX = 0;
         int lowestY = 0;
@@ -590,7 +591,7 @@ public static class MapRoomTools {
     /// <param name="rooms">Map rooms to search through.</param>
     /// <param name="point">Point that should be contained in one of the given rooms.</param>
     /// <returns>Returns null is no rooms found.</returns>
-    public static MapRoom FindRoomContainingPoint(List<MapRoom> rooms, Vector2 point)
+    public MapRoom FindRoomContainingPoint(List<MapRoom> rooms, Vector2 point)
     {
         foreach (MapRoom room in rooms)
         {
@@ -609,7 +610,7 @@ public static class MapRoomTools {
     /// <param name="rooms">Rooms to check for hubs</param>
     /// <param name="cutoff">Adjustment to further limit allowed lower size of hub rooms</param>
     /// <returns></returns>
-    public static List<MapRoom> FindHubRooms(List<MapRoom> rooms, float cutoff)
+    public List<MapRoom> FindHubRooms(List<MapRoom> rooms, float cutoff)
     {
         int height_mean = 0;
         int width_mean = 0;
@@ -642,7 +643,7 @@ public static class MapRoomTools {
     /// <param name="hallwayLines">Lines that run from one hub room to another.</param>
     /// <param name="hubRooms">Main 'hub' rooms already discoverd.</param>
     /// <returns></returns>
-    public static List<MapRoom> FindHallwayRooms(List<Line> hallwayLines, List<MapRoom> hubRooms)
+    public List<MapRoom> FindHallwayRooms(List<Line> hallwayLines, List<MapRoom> hubRooms)
     {
         List<MapRoom> foundRooms = new List<MapRoom>();
 
