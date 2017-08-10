@@ -149,8 +149,8 @@ public class MapGen : MonoBehaviour {
     {
         foreach (Line line in lines)
         {
-            Point p0 = new Point((int)line.p0.Value.x, (int)line.p0.Value.y);
-            Point p1 = new Point((int)line.p1.Value.x, (int)line.p1.Value.y);
+            Point p0 = new Point((int)line.p0.x, (int)line.p0.y);
+            Point p1 = new Point((int)line.p1.x, (int)line.p1.y);
 
             // Determine if the width and height steps will go in negitive directions.
             int negX = p0.X < p1.X ? 1 : -1;
@@ -301,8 +301,8 @@ public class MapGen : MonoBehaviour {
         {
             MapRoom r0;
             MapRoom r1;
-            r0 = mapRoomTools.FindRoomContainingPoint(rooms, segment.p0.Value);
-            r1 = mapRoomTools.FindRoomContainingPoint(rooms, segment.p1.Value);
+            r0 = mapRoomTools.FindRoomContainingPoint(rooms, segment.p0);
+            r1 = mapRoomTools.FindRoomContainingPoint(rooms, segment.p1);
 
             Point midPoint = mapRoomTools.MidPointBetweenMapRooms(r0, r1);
 
