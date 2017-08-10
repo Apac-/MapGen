@@ -62,7 +62,7 @@ public class MapGen : MonoBehaviour {
     public void Generate()
     {
         // Start fresh
-        ResetGeneration(mapRoomFactory, physMapRoomTools);
+        ResetGeneration();
 
         // State is waiting for coroutine to finish
         currentState = GenerationState.Waiting;
@@ -461,11 +461,10 @@ public class MapGen : MonoBehaviour {
     }
 
     // Removes and resets all created objects to get ready for clean generation
-    private void ResetGeneration(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
+    private void ResetGeneration()
     {
         CleanUp();
 
-        mapRoomFactory = roomFactory;
         mapRoomFactory.UpdateSettings(mapSettings);
     }
 
