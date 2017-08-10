@@ -18,6 +18,7 @@ public class MapGen : MonoBehaviour {
     private IMapRoomFactory mapRoomFactory;
     private IPhysicalMapRoomTools physMapRoomTools;
 
+    // NOTE: This I wouldn't hold in a real project, instead it would subscribe to an event thrown from this object.
     private MapGenVisualDebugger visualDebugger;
 
     // Use this for initialization
@@ -29,10 +30,10 @@ public class MapGen : MonoBehaviour {
 
     // Constructor type method to inject into via zenject installer.
     [Inject]
-    public void Construct(IMapRoomFactory mapRoomFactory, IPhysicalMapRoomTools physRoomTools)
+    public void Construct(IMapRoomFactory mapRoomFactory, IPhysicalMapRoomTools physMapRoomTools)
     {
         this.mapRoomFactory = mapRoomFactory;
-        this.physMapRoomTools = physRoomTools;
+        this.physMapRoomTools = physMapRoomTools;
     }
 	
 	// Update is called once per frame
