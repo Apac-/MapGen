@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class MapRoomTools : IMapRoomTools
 {
-
     public Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1)
     {
         Point r0c = r0.centerPoint;
