@@ -15,5 +15,7 @@ public class GameInstaller : MonoInstaller<GameInstaller>
 
         Container.Bind<IMapRoomFactory>().To<MapRoomFactory>().AsSingle();
         Container.Bind<IPhysicalMapRoomTools>().To<PhysicalMapRoomTools>().AsSingle();
+        Container.Bind<IPointTriangulation>().To<DelaunayGrapher>().AsSingle();
+        Container.Bind<IMapRoomTools>().To<MapRoomTools>().AsSingle();
     }
 }
