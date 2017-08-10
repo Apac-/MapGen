@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public static class DelaunayGrapher {
-
+public class DelaunayGrapher : IPointTriangulation
+{
     /// <summary>
     /// Find minium amount of connecting line segments between supplied room center points.
     /// </summary>
     /// <param name="percentOfSegementsAboveMinThreshold">Percent of extra connecting line segments to return. If 0% then only returns min spanning tree.</param>
     /// <returns></returns>
-    public static List<LineSegment> FindConnectingLineSegments(List<Vector2> centerPoints, float percentOfSegementsAboveMinThreshold)
+    public List<Line> FindConnectingLineSegments(List<Vector2> centerPoints, float percentOfSegementsAboveMinThreshold)
     {
         Delaunay.Voronoi v = CreateGraph(centerPoints);
 
@@ -46,7 +46,13 @@ public static class DelaunayGrapher {
             }
         }
 
-        return finalSegments;
+        List<Line> foundLines = new List<Line>();
+        foreach (LineSegment seg in finalSegments)
+        {
+            foundLines.Add(new Line(seg.p0, seg.p1));
+        }
+
+        return foundLines;
     }
 
     private static Delaunay.Voronoi CreateGraph(List<Vector2> centerPoints)
