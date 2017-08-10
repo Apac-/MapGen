@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class MapGen : MonoBehaviour {
     public MapSettings mapSettings;
@@ -15,6 +16,7 @@ public class MapGen : MonoBehaviour {
     private List<MapRoom> mapRooms;
 
     private IMapRoomFactory mapRoomFactory;
+    private IPhysicalMapRoomTools physMapRoomTools;
 
     private MapGenVisualDebugger visualDebugger;
 
@@ -23,6 +25,15 @@ public class MapGen : MonoBehaviour {
         currentState = GenerationState.Waiting;
         visualDebugger = gameObject.GetComponent<MapGenVisualDebugger>();
 	}
+
+
+    // Constructor type method to inject into. Called from Zenject installer.
+    [Inject]
+    public void Construct(IMapRoomFactory mapRoomFactory, IPhysicalMapRoomTools physRoomTools)
+    {
+        this.mapRoomFactory = mapRoomFactory;
+        this.physMapRoomTools = physRoomTools;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -36,19 +47,15 @@ public class MapGen : MonoBehaviour {
                     visualDebugger.SetMapData(mapData);
                 break;
             case GenerationState.Reset:
-                Generate();
+                //Generate();
                 break;
             case GenerationState.Finished:
-                CleanUp();
+                //CleanUp();
                 currentState = GenerationState.Waiting;
                 break;
         }
     }
 
-    private void CleanUp()
-    {
-        throw new NotImplementedException();
-    }
 
     /// <summary>
     /// Generate the foundational rooms and objects then wait for physical rooms to seperate to continue.
@@ -446,15 +453,21 @@ public class MapGen : MonoBehaviour {
         }
     }
 
-    // Removes and resets all created objects to get ready for clean generation
-    private void ResetGeneration(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
+    // Removes the room helper objects from scene and resets mapRooms list.
+    private void CleanUp(IPhysicalMapRoomTools physMapRoomTools)
     {
         mapRooms = new List<MapRoom>();
 
+        physMapRoomTools.RemovePhysicalRooms(this.transform);
+    }
+
+    // Removes and resets all created objects to get ready for clean generation
+    private void ResetGeneration(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
+    {
+        CleanUp(physMapRoomTools);
+
         mapRoomFactory = roomFactory;
         mapRoomFactory.UpdateSettings(mapSettings);
-
-        physMapRoomTools.RemovePhysicalRooms(this.transform);
     }
 
     /// <summary>
