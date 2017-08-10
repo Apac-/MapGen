@@ -19,6 +19,7 @@ public class MapGen : MonoBehaviour {
 
     private IMapRoomFactory mapRoomFactory;
     private IPhysicalMapRoomTools physMapRoomTools;
+    private IMapRoomTools mapRoomTools;
 
     // NOTE: This I wouldn't hold in a real project, instead it would subscribe to an event thrown from this object.
     private MapGenVisualDebugger visualDebugger;
@@ -32,10 +33,13 @@ public class MapGen : MonoBehaviour {
 
     // Constructor type method to inject into via zenject installer.
     [Inject]
-    public void Construct(IMapRoomFactory mapRoomFactory, IPhysicalMapRoomTools physMapRoomTools)
+    public void Construct(IMapRoomFactory mapRoomFactory,
+                          IPhysicalMapRoomTools physMapRoomTools,
+                          IMapRoomTools mapRoomTools)
     {
         this.mapRoomFactory = mapRoomFactory;
         this.physMapRoomTools = physMapRoomTools;
+        this.mapRoomTools = mapRoomTools;
     }
 	
 	// Update is called once per frame
@@ -86,7 +90,7 @@ public class MapGen : MonoBehaviour {
     {
         physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation(this.transform);
 
-        List<MapRoom> hubRooms = MapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
+        List<MapRoom> hubRooms = mapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
 
         // Re-generate if not enough hub rooms are found
         if (hubRooms.Count <= mapSettings.minAmountOfHubRooms)
@@ -105,7 +109,7 @@ public class MapGen : MonoBehaviour {
 
         List<Line> hallwayLines = CreateHallwayLinesFromSegments(connectingLineSegments, hubRooms);
 
-        List<MapRoom> hallwayRooms = MapRoomTools.FindHallwayRooms(hallwayLines, hubRooms);
+        List<MapRoom> hallwayRooms = mapRoomTools.FindHallwayRooms(hallwayLines, hubRooms);
 
         Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
         Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
@@ -124,7 +128,7 @@ public class MapGen : MonoBehaviour {
         AddRoomsToMap(ref map, hubRooms);
         AddRoomsToMap(ref map, hallwayRooms);
         AddLinesToMap(ref map, hallwayLines);
-        List<MapRoom> fillerRooms = MapRoomTools.CreateRoomsFromFiller(map, mapRoomFactory);
+        List<MapRoom> fillerRooms = mapRoomTools.CreateRoomsFromFiller(map, mapRoomFactory);
         AddRoomsToMap(ref map, fillerRooms);
 
         currentState = GenerationState.Finished;
@@ -220,9 +224,9 @@ public class MapGen : MonoBehaviour {
     {
         List<Point> points = new List<Point>()
         {
-            MapRoomTools.FindGreatestPointInRooms(hubRooms),
-            MapRoomTools.FindGreatestPointInRooms(hallwayRooms),
-            MapRoomTools.FindGreatestPointInHallways(hallwayLines),
+            mapRoomTools.FindGreatestPointInRooms(hubRooms),
+            mapRoomTools.FindGreatestPointInRooms(hallwayRooms),
+            mapRoomTools.FindGreatestPointInHallways(hallwayLines),
         };
 
         int greatestX = 0;
@@ -250,9 +254,9 @@ public class MapGen : MonoBehaviour {
     {
         List<Point> points = new List<Point>()
         {
-            MapRoomTools.FindLowestPointInRooms(hubRooms),
-            MapRoomTools.FindLowestPointInRooms(hallwayRooms),
-            MapRoomTools.FindLowestPointInHallways(hallwayLines),
+            mapRoomTools.FindLowestPointInRooms(hubRooms),
+            mapRoomTools.FindLowestPointInRooms(hallwayRooms),
+            mapRoomTools.FindLowestPointInHallways(hallwayLines),
         };
 
         int lowestX = 0;
@@ -293,15 +297,15 @@ public class MapGen : MonoBehaviour {
         {
             MapRoom r0;
             MapRoom r1;
-            r0 = MapRoomTools.FindRoomContainingPoint(rooms, segment.p0.Value);
-            r1 = MapRoomTools.FindRoomContainingPoint(rooms, segment.p1.Value);
+            r0 = mapRoomTools.FindRoomContainingPoint(rooms, segment.p0.Value);
+            r1 = mapRoomTools.FindRoomContainingPoint(rooms, segment.p1.Value);
 
-            Point midPoint = MapRoomTools.MidPointBetweenMapRooms(r0, r1);
+            Point midPoint = mapRoomTools.MidPointBetweenMapRooms(r0, r1);
 
             Vector2 startPoint;
             Vector2 endPoint;
 
-            if (MapRoomTools.IsPointBetweenXBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer)) // Stright hallway
+            if (mapRoomTools.IsPointBetweenXBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer)) // Stright hallway
             {
                 // Create lines from mid point then up and down to rooms.
                 startPoint = new Vector2(midPoint.X, r0.centerPoint.y);
@@ -309,7 +313,7 @@ public class MapGen : MonoBehaviour {
 
                 hallwayLines.AddRange(CreateHallwayLinesOfSetWidth(startPoint, endPoint, mapSettings.sizeOfHallways, false));
             }
-            else if (MapRoomTools.IsPointBetweenYBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer)) // Stright hallway
+            else if (mapRoomTools.IsPointBetweenYBoundariesOfGivenRooms(midPoint, r0, r1, hallwayBuffer)) // Stright hallway
             {
                 // Create lines from mid point then left and right to rooms.
                 startPoint = new Vector2(r0.centerPoint.x, midPoint.Y);
