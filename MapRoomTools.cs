@@ -110,7 +110,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="map">Basic map 2d array</param>
     /// <returns></returns>
-    public static List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, MapRoomFactory mapRoomCreator)
+    public static List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, IMapRoomFactory roomFactory)
     {
         // Look for all 'tiles' that are ID of 1 (filler).
         HashSet<Point> fillerPoints = new HashSet<Point>();
@@ -166,7 +166,7 @@ public static class MapRoomTools {
             List<HashSet<Point>> seperatedRooms = FindRoomsInGroup(fillerGroup);
 
             // Create a collection of dungeon rooms from hashSets of points
-            rooms.AddRange(CreateRoomsFromHashSets(seperatedRooms, mapRoomCreator));
+            rooms.AddRange(CreateRoomsFromHashSets(seperatedRooms, roomFactory));
         }
 
         foreach (MapRoom room in rooms)
@@ -182,7 +182,7 @@ public static class MapRoomTools {
     /// </summary>
     /// <param name="rooms">Pre-processed sets of points that make up square or rectangle room groupings</param>
     /// <returns></returns>
-    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, MapRoomFactory mapRoomCreator)
+    private static List<MapRoom> CreateRoomsFromHashSets(List<HashSet<Point>> rooms, IMapRoomFactory roomFactory)
     {
         List<MapRoom> createdRooms = new List<MapRoom>();
 
@@ -209,7 +209,7 @@ public static class MapRoomTools {
                 if (tempHeight > height)
                     height = tempHeight;
             }
-            createdRooms.Add(mapRoomCreator.CreateRoom(startPoint, width, height));
+            createdRooms.Add(roomFactory.CreateRoom(startPoint, width, height));
         }
 
         return createdRooms;

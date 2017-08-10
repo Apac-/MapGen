@@ -36,29 +36,34 @@ public class MapGen : MonoBehaviour {
                     visualDebugger.SetMapData(mapData);
                 break;
             case GenerationState.Reset:
-                ResetAndRegenerate();
+                Generate();
                 break;
             case GenerationState.Finished:
-                ResetGeneration();
+                CleanUp();
                 currentState = GenerationState.Waiting;
                 break;
         }
     }
 
+    private void CleanUp()
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Generate the foundational rooms and objects then wait for physical rooms to seperate to continue.
     /// </summary>
-    public void Generate()
+    public void Generate(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
     {
         // Start fresh
-        ResetGeneration();
+        ResetGeneration(roomFactory, physMapRoomTools);
 
         // State is waiting for coroutine to finish
         currentState = GenerationState.Waiting;
 
         mapRooms = mapRoomFactory.CreateRooms();
 
-        GeneratePhysicalRooms(mapRooms);
+        physMapRoomTools.GeneratePhysicalRooms(this.transform, physicalRoom, mapRooms);
 
         StartCoroutine(WaitTillRoomsSeperate(this.transform));
     }
@@ -442,45 +447,14 @@ public class MapGen : MonoBehaviour {
     }
 
     // Removes and resets all created objects to get ready for clean generation
-    private void ResetGeneration()
+    private void ResetGeneration(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
     {
         mapRooms = new List<MapRoom>();
 
-        this.mapRoomFactory = roomFactory;
-        this.mapRoomFactory.UpdateSettings(mapSettings);
+        mapRoomFactory = roomFactory;
+        mapRoomFactory.UpdateSettings(mapSettings);
 
-        RemovePhysicalRoomObjects(this.transform);
-    }
-
-    // Resets and regenerates new rooms.
-    private void ResetAndRegenerate()
-    {
-        ResetGeneration();
-
-        Generate();
-    }
-
-    // Removes all physical helper room games objects
-    private void RemovePhysicalRoomObjects(Transform roomHolder)
-    {
-        foreach (Transform room in roomHolder)
-        {
-            Destroy(room.gameObject);
-        }
-    }
-
-
-    // Create the physical helper object to utilize the physics engine for room seperation
-    private void GeneratePhysicalRooms(List<MapRoom> mapRooms)
-    {
-        foreach (MapRoom room in mapRooms)
-        {
-            GameObject physicalRoom = Instantiate(this.physicalRoom);
-            physicalRoom.GetComponent<MapRoomHolder>().mapRoom = room;
-            physicalRoom.transform.position = new Vector3(room.gridLocation.X, room.gridLocation.Y);
-            physicalRoom.transform.localScale = new Vector3(room.width, room.height);
-            physicalRoom.transform.SetParent(this.transform, true);
-        }
+        physMapRoomTools.RemovePhysicalRooms(this.transform);
     }
 
     /// <summary>

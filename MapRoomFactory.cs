@@ -32,6 +32,8 @@ public class MapRoomFactory : IMapRoomFactory
     /// <param name="settings"></param>
     public void UpdateSettings(MapSettings settings)
     {
+        _id = 0;
+
         numberToCreate = settings.numberOfRoomsToCreate;
 
         spawnHeight = settings.roomSpawnEllipsisAreaHeight;
