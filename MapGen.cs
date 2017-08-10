@@ -20,6 +20,7 @@ public class MapGen : MonoBehaviour {
     private IMapRoomFactory mapRoomFactory;
     private IPhysicalMapRoomTools physMapRoomTools;
     private IMapRoomTools mapRoomTools;
+    private IPointTriangulation pointTriangulation;
 
     // NOTE: This I wouldn't hold in a real project, instead it would subscribe to an event thrown from this object.
     private MapGenVisualDebugger visualDebugger;
@@ -35,11 +36,13 @@ public class MapGen : MonoBehaviour {
     [Inject]
     public void Construct(IMapRoomFactory mapRoomFactory,
                           IPhysicalMapRoomTools physMapRoomTools,
-                          IMapRoomTools mapRoomTools)
+                          IMapRoomTools mapRoomTools,
+                          IPointTriangulation pointTriangulation)
     {
         this.mapRoomFactory = mapRoomFactory;
         this.physMapRoomTools = physMapRoomTools;
         this.mapRoomTools = mapRoomTools;
+        this.pointTriangulation = pointTriangulation;
     }
 	
 	// Update is called once per frame
@@ -105,7 +108,8 @@ public class MapGen : MonoBehaviour {
             hubRoomCenterPoints.Add(room.centerPoint);
         }
 
-        List<LineSegment> connectingLineSegments = DelaunayGrapher.FindConnectingLineSegments(hubRoomCenterPoints, mapSettings.percentOfRoomConnectionAboveMinPath);
+        List<Line> connectingLineSegments = pointTriangulation.FindConnectingLineSegments(hubRoomCenterPoints, 
+                                                                                          mapSettings.percentOfRoomConnectionAboveMinPath);
 
         List<Line> hallwayLines = CreateHallwayLinesFromSegments(connectingLineSegments, hubRooms);
 
@@ -145,8 +149,8 @@ public class MapGen : MonoBehaviour {
     {
         foreach (Line line in lines)
         {
-            Point p0 = new Point((int)line.p0.x, (int)line.p0.y);
-            Point p1 = new Point((int)line.p1.x, (int)line.p1.y);
+            Point p0 = new Point((int)line.p0.Value.x, (int)line.p0.Value.y);
+            Point p1 = new Point((int)line.p1.Value.x, (int)line.p1.Value.y);
 
             // Determine if the width and height steps will go in negitive directions.
             int negX = p0.X < p1.X ? 1 : -1;
@@ -286,14 +290,14 @@ public class MapGen : MonoBehaviour {
     /// <param name="segments">Graph line segments</param>
     /// <param name="rooms">Rooms with found connections in delaunay voroni graphing step</param>
     /// <returns></returns>
-    private List<Line> CreateHallwayLinesFromSegments(List<LineSegment> segments, List<MapRoom> rooms)
+    private List<Line> CreateHallwayLinesFromSegments(List<Line> segments, List<MapRoom> rooms)
     {
         List<Line> hallwayLines = new List<Line>();
 
         // Buffer size to make hallway lines within room boundries
         int hallwayBuffer = mapSettings.sizeOfHallways / 2;
 
-        foreach (LineSegment segment in segments)
+        foreach (Line segment in segments)
         {
             MapRoom r0;
             MapRoom r1;
