@@ -6,9 +6,11 @@ using UnityEngine;
 using Zenject;
 
 public class MapGen : MonoBehaviour {
-    public MapSettings mapSettings;
+    [SerializeField]
+    private MapSettings mapSettings;
 
-    public GameObject physicalRoom;
+    [SerializeField]
+    private GameObject physicalRoom;
 
     private enum GenerationState { Waiting, RoomsSeperated, Reset, Finished }
     private GenerationState currentState;
@@ -82,7 +84,7 @@ public class MapGen : MonoBehaviour {
     /// <returns></returns>
     private MapData GenerateMap(List<MapRoom> rooms)
     {
-        SnapRoomLocationToGrid(this.transform);
+        physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation(this.transform);
 
         List<MapRoom> hubRooms = MapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
 
@@ -438,19 +440,6 @@ public class MapGen : MonoBehaviour {
         }
 
         return segments;
-    }
-
-    /// <summary>
-    /// Updates location of all map rooms by their physical helper objects.
-    /// </summary>
-    /// <param name="roomHolder">Parent transform that holds physical helper objects</param>
-    private void SnapRoomLocationToGrid(Transform roomHolder)
-    {
-        foreach (Transform child in roomHolder)
-        {
-            Point location = new Point(Mathf.RoundToInt(child.position.x), Mathf.RoundToInt(child.position.y));
-            child.GetComponent<MapRoomHolder>().mapRoom.gridLocation = location;
-        }
     }
 
     // Removes the room helper objects from scene and resets mapRooms list.

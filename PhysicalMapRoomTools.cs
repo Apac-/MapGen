@@ -32,4 +32,17 @@ public class PhysicalMapRoomTools : IPhysicalMapRoomTools
             GameObject.Destroy(room.gameObject);
         }
     }
+
+    /// <summary>
+    /// Updates location of all map rooms by their physical helper objects.
+    /// </summary>
+    /// <param name="roomHolder">Parent transform that holds physical helper objects</param>
+    public void SnapMapRoomLocationToPhysicalRoomLocation(Transform roomHolder)
+    {
+        foreach (Transform child in roomHolder)
+        {
+            Point location = new Point(Mathf.RoundToInt(child.position.x), Mathf.RoundToInt(child.position.y));
+            child.GetComponent<MapRoomHolder>().mapRoom.gridLocation = location;
+        }
+    }
 }
