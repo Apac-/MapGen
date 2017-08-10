@@ -27,7 +27,7 @@ public class MapGen : MonoBehaviour {
 	}
 
 
-    // Constructor type method to inject into. Called from Zenject installer.
+    // Constructor type method to inject into via zenject installer.
     [Inject]
     public void Construct(IMapRoomFactory mapRoomFactory, IPhysicalMapRoomTools physRoomTools)
     {
@@ -47,23 +47,22 @@ public class MapGen : MonoBehaviour {
                     visualDebugger.SetMapData(mapData);
                 break;
             case GenerationState.Reset:
-                //Generate();
+                Generate();
                 break;
             case GenerationState.Finished:
-                //CleanUp();
+                CleanUp();
                 currentState = GenerationState.Waiting;
                 break;
         }
     }
 
-
     /// <summary>
     /// Generate the foundational rooms and objects then wait for physical rooms to seperate to continue.
     /// </summary>
-    public void Generate(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
+    public void Generate()
     {
         // Start fresh
-        ResetGeneration(roomFactory, physMapRoomTools);
+        ResetGeneration(mapRoomFactory, physMapRoomTools);
 
         // State is waiting for coroutine to finish
         currentState = GenerationState.Waiting;
@@ -454,7 +453,7 @@ public class MapGen : MonoBehaviour {
     }
 
     // Removes the room helper objects from scene and resets mapRooms list.
-    private void CleanUp(IPhysicalMapRoomTools physMapRoomTools)
+    private void CleanUp()
     {
         mapRooms = new List<MapRoom>();
 
@@ -464,7 +463,7 @@ public class MapGen : MonoBehaviour {
     // Removes and resets all created objects to get ready for clean generation
     private void ResetGeneration(IMapRoomFactory roomFactory, IPhysicalMapRoomTools physMapRoomTools)
     {
-        CleanUp(physMapRoomTools);
+        CleanUp();
 
         mapRoomFactory = roomFactory;
         mapRoomFactory.UpdateSettings(mapSettings);
