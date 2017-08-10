@@ -59,7 +59,7 @@ public class MapRoomTools : IMapRoomTools
     /// </summary>
     /// <param name="lines"></param>
     /// <returns></returns>
-    internal Point FindGreatestPointInHallways(List<Line> lines)
+    public Point FindGreatestPointInHallways(List<Line> lines)
     {
         int greatestX = 0;
         int greatestY = 0;
@@ -479,7 +479,7 @@ public class MapRoomTools : IMapRoomTools
     /// </summary>
     /// <param name="lines"></param>
     /// <returns></returns>
-    internal Point FindLowestPointInHallways(List<Line> lines)
+    public Point FindLowestPointInHallways(List<Line> lines)
     {
         int lowestX = 0;
         int lowestY = 0;
@@ -530,7 +530,7 @@ public class MapRoomTools : IMapRoomTools
     /// </summary>
     /// <param name="rooms"></param>
     /// <returns></returns>
-    internal Point FindGreatestPointInRooms(List<MapRoom> rooms)
+    public Point FindGreatestPointInRooms(List<MapRoom> rooms)
     {
         int greatestX = 0;
         int greatestY = 0;
