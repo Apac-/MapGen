@@ -1,6 +1,7 @@
 # MapGen
 
 2d Map generator for tile based games built in Unity3d.
+![Alt text](/images/RoomGen_Full_Preview.gif)
 
 ### How it works
 
