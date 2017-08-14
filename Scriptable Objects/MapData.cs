@@ -35,7 +35,7 @@ public class MapData
 
         width = upperRightPoint.X - bottomLeftPoint.X;
         height = upperRightPoint.Y - bottomLeftPoint.Y;
-        RoomType[][] map = CreateMap(width, height);
+        map = CreateMap(width, height);
 
         AddRoomsToMap(hubRooms);
         AddRoomsToMap(hallwayRooms);
