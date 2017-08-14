@@ -9,8 +9,12 @@ public class MapData
     public List<Line> hallwayLines { get; private set; }
     public List<MapRoom> hallwayRooms { get; private set; }
     public List<MapRoom> hubRooms { get; private set; }
-    public Point greatestPoint { get; private set; }
     public RoomType[][] map { get; private set; }
+
+    public readonly int width;
+    public readonly int height;
+
+    public Point greatestPoint { get { return new Point(width, height); } }
 
     private IMapRoomFactory mapRoomFactory;
 
@@ -18,9 +22,7 @@ public class MapData
     {
         this.hubRooms = hubRooms;
         this.hallwayRooms = hallwayRooms;
-        this.fillerRooms = fillerRooms;
         this.hallwayLines = hallwayLines;
-        this.greatestPoint = greatestPoint;
 
         this.mapRoomFactory = mapRoomFactory;
 
@@ -31,16 +33,15 @@ public class MapData
         hallwayRooms.TranslateWorldToGridLocation(bottomLeftPoint);
         hallwayLines = LineTools.TranslateWorldToGridLocation(hallwayLines, bottomLeftPoint);
 
-        int mapWidth = upperRightPoint.X - bottomLeftPoint.X;
-        int mapHeight = upperRightPoint.Y - bottomLeftPoint.Y;
-        RoomType[][] map = CreateMap(mapWidth, mapHeight);
-        Point upperRightPointInGridSpace = new Point(mapWidth, mapHeight);
+        width = upperRightPoint.X - bottomLeftPoint.X;
+        height = upperRightPoint.Y - bottomLeftPoint.Y;
+        RoomType[][] map = CreateMap(width, height);
 
-        AddRoomsToMap(ref map, hubRooms);
-        AddRoomsToMap(ref map, hallwayRooms);
-        AddLinesToMap(ref map, hallwayLines);
-        List<MapRoom> fillerRooms = CreateRoomsFromFiller(map, mapRoomFactory);
-        AddRoomsToMap(ref map, fillerRooms);
+        AddRoomsToMap(hubRooms);
+        AddRoomsToMap(hallwayRooms);
+        AddLinesToMap(hallwayLines);
+
+        AddRoomsToMap(this.mapRoomFactory.CreateRoomsFromFiller(map));
     }
 
     /// <summary>
@@ -48,7 +49,7 @@ public class MapData
     /// </summary>
     /// <param name="map">Basic map array</param>
     /// <param name="lines">Lines that will be added to map as filler</param>
-    private void AddLinesToMap(ref RoomType[][] map, List<Line> lines)
+    private void AddLinesToMap(List<Line> lines)
     {
         foreach (Line line in lines)
         {
@@ -86,7 +87,7 @@ public class MapData
     /// </summary>
     /// <param name="map">Basic map array</param>
     /// <param name="rooms">Rooms to add to map</param>
-    private void AddRoomsToMap(ref RoomType[][] map, List<MapRoom> rooms)
+    private void AddRoomsToMap(List<MapRoom> rooms)
     {
         foreach (MapRoom room in rooms)
         {
