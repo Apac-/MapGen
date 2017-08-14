@@ -122,10 +122,10 @@ public class MapGen : MonoBehaviour {
 
 
     /// <summary>
-    /// Creates lines between rooms connected by the delaunay voroni graph line segments.
+    /// Creates lines between rooms connected by line segments.
     /// </summary>
     /// <param name="segments">Graph line segments</param>
-    /// <param name="rooms">Rooms with found connections in delaunay voroni graphing step</param>
+    /// <param name="rooms">Rooms with found connections in point triangulation connected tree</param>
     /// <returns></returns>
     private List<Line> CreateHallwayLinesFromSegments(List<Line> segments, List<MapRoom> rooms)
     {
