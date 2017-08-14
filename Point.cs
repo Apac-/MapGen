@@ -26,9 +26,6 @@
 
     public override int GetHashCode()
     {
-        if (this == null)
-            return 0;
-
         return 17 * X + 23 * Y;
     }
 
