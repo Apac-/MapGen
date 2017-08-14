@@ -2,9 +2,11 @@
 
 public interface IMapRoomFactory
 {
-    MapRoom CreateRoom(Point loc, int width, int height);
+    void UpdateSettings(MapSettings settings);
 
     List<MapRoom> CreateRooms();
+    
+    MapRoom CreateRoom(Point loc, int width, int height);
 
-    void UpdateSettings(MapSettings settings);
+    List<MapRoom> CreateRoomsFromFiller(RoomType[][] map);
 }
