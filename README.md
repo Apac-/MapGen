@@ -1,6 +1,23 @@
 # MapGen
 
 2d Map generator for tile based games built in Unity3d. 
+![Alt text](/images/RoomGen_Large_Progression.gif)
+
+### How it works
+
+Creates 2d objects in a constricted space then uses Unity's physics engine to seperate. Once seperated, the larger 'hub' rooms are found and connected to one another. The connections are culled down to a minimum spanning tree, then a few of the culled connections are added back.
+![Alt text](/images/RoomGen_WithPaths.gif)
+
+Next, create right angle hallways between connected hub rooms. The remaining rooms are checked for collision along the hallway paths. If collision is found then those rooms are added as 'hallway' rooms. Check the hallway lines for empty space along their path. If a space is found to be empty, note the point. Create 'filler' rooms from the noted empty spaces along the hallway line paths.
+```
+Legend:
+  Hub rooms:      Green
+  Hallway rooms:  Yellow
+  Filler rooms:   Blue
+  Filler points:  Red
+  Hallways:       Grey
+```
+![Alt text](/images/RoomGen_Large_Progression.gif)
 
 ### Prerequisites
 
