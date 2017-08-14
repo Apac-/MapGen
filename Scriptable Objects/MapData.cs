@@ -39,7 +39,7 @@ public class MapData
         AddRoomsToMap(ref map, hubRooms);
         AddRoomsToMap(ref map, hallwayRooms);
         AddLinesToMap(ref map, hallwayLines);
-        List<MapRoom> fillerRooms = mapRoomTools.CreateRoomsFromFiller(map, mapRoomFactory);
+        List<MapRoom> fillerRooms = CreateRoomsFromFiller(map, mapRoomFactory);
         AddRoomsToMap(ref map, fillerRooms);
     }
 

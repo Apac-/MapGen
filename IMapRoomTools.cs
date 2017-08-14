@@ -3,17 +3,9 @@ using UnityEngine;
 
 public interface IMapRoomTools
 {
-    List<MapRoom> CreateRoomsFromFiller(RoomType[][] map, IMapRoomFactory roomFactory);
-
     List<MapRoom> FindHallwayRooms(List<Line> hallwayLines, List<MapRoom> hubRooms);
 
     List<MapRoom> FindHubRooms(List<MapRoom> rooms, float cutoff);
-
-    Point FindLowestPointInRooms(List<MapRoom> rooms);
-    Point FindGreatestPointInRooms(List<MapRoom> rooms);
-
-    Point FindLowestPointInHallways(List<Line> lines);
-    Point FindGreatestPointInHallways(List<Line> lines);
 
     MapRoom FindRoomContainingPoint(List<MapRoom> rooms, Vector2 point);
 
