@@ -18,20 +18,20 @@ public class MapData
 
     private IMapRoomFactory mapRoomFactory;
 
-    public MapData(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> hallwayLines, IMapRoomFactory mapRoomFactory)
+    public MapData(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> connectingLines, IMapRoomFactory mapRoomFactory)
     {
         this.hubRooms = hubRooms;
         this.hallwayRooms = hallwayRooms;
-        this.hallwayLines = hallwayLines;
+        this.hallwayLines = connectingLines;
 
         this.mapRoomFactory = mapRoomFactory;
 
         Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
         Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
 
-        hubRooms.TranslateWorldToGridLocation(bottomLeftPoint);
-        hallwayRooms.TranslateWorldToGridLocation(bottomLeftPoint);
-        hallwayLines = LineTools.TranslateWorldToGridLocation(hallwayLines, bottomLeftPoint);
+        hubRooms = OffSetRoomsToZeroOrigin(hubRooms, bottomLeftPoint);
+        hallwayRooms = OffSetRoomsToZeroOrigin(hallwayRooms, bottomLeftPoint);
+        hallwayLines = OffsetLinesToZeroOrigin(hallwayLines, bottomLeftPoint);
 
         width = upperRightPoint.X - bottomLeftPoint.X;
         height = upperRightPoint.Y - bottomLeftPoint.Y;
@@ -42,6 +42,47 @@ public class MapData
         AddLinesToMap(hallwayLines);
 
         AddRoomsToMap(this.mapRoomFactory.CreateRoomsFromFiller(map));
+    }
+
+    /// <summary>
+    /// Changes lines to be based on a map that has a 0,0 origin.
+    /// </summary>
+    /// <param name="lines">The lines to offset.</param>
+    /// <param name="offsetPoint">Lowest point in world location on map.</param>
+    /// <returns></returns>
+    private List<Line> OffsetLinesToZeroOrigin(List<Line> lines, Point offsetPoint)
+    {
+        List<Line> offsetLines = new List<Line>();
+
+        foreach (Line line in lines)
+        {
+            // Snap line locations to grid space (ints)
+            int p0x = Mathf.RoundToInt(line.p0.x) - offsetPoint.X;
+            int p0y = Mathf.RoundToInt(line.p0.y) - offsetPoint.Y;
+
+            int p1x = Mathf.RoundToInt(line.p1.x) - offsetPoint.X;
+            int p1y = Mathf.RoundToInt(line.p1.y) - offsetPoint.Y;
+
+            offsetLines.Add(new Line(new Vector2(p0x, p0y), new Vector2(p1x, p1y)));
+        }
+
+        return offsetLines;
+    }
+
+    /// <summary>
+    /// Changes rooms to be based on a map that has a 0,0 origin.
+    /// </summary>
+    /// <param name="rooms">Rooms to change</param>
+    /// <param name="offsetPoint">The lowest point in world location on map.</param>
+    private List<MapRoom> OffSetRoomsToZeroOrigin(List<MapRoom> rooms, Point offsetPoint)
+    {
+        foreach (MapRoom room in rooms)
+        {
+            Point newGridLocation = new Point(room.gridLocation.X - offsetPoint.X, room.gridLocation.Y - offsetPoint.Y);
+            room.gridLocation = newGridLocation;
+        }
+
+        return rooms;
     }
 
     /// <summary>
