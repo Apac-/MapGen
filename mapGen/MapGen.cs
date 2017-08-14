@@ -53,8 +53,15 @@ public class MapGen : MonoBehaviour {
                 break;
             case GenerationState.RoomsSeperated:
                 MapData mapData = GenerateMap(mapRooms);
+
                 if (mapData != null)
+                {
                     visualDebugger.SetMapData(mapData);
+                    currentState = GenerationState.Finished;
+                }
+                else
+                    currentState = GenerationState.Reset;
+
                 break;
             case GenerationState.Reset:
                 Generate();
@@ -98,7 +105,6 @@ public class MapGen : MonoBehaviour {
         // Re-generate if not enough hub rooms are found
         if (hubRooms.Count <= mapSettings.minAmountOfHubRooms)
         {
-            currentState = GenerationState.Reset;
             return null;
         }
 
@@ -114,8 +120,6 @@ public class MapGen : MonoBehaviour {
         List<Line> hallwayLines = CreateHallwayLinesFromSegments(connectingLineSegments, hubRooms);
 
         List<MapRoom> hallwayRooms = mapRoomTools.FindHallwayRooms(hallwayLines, hubRooms);
-
-        currentState = GenerationState.Finished;
 
         return new MapData(hubRooms, hallwayRooms, hallwayLines, mapRoomFactory);
     }
