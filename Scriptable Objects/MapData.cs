@@ -41,7 +41,8 @@ public class MapData
         AddRoomsToMap(hallwayRooms);
         AddLinesToMap(hallwayLines);
 
-        AddRoomsToMap(this.mapRoomFactory.CreateRoomsFromFiller(map));
+        fillerRooms = this.mapRoomFactory.CreateRoomsFromFiller(map);
+        AddRoomsToMap(fillerRooms);
     }
 
     /// <summary>
