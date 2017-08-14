@@ -59,7 +59,7 @@ public class MapRoomTools : IMapRoomTools
     /// </summary>
     /// <param name="connectedGroup">connected point grouping</param>
     /// <returns></returns>
-    private List<HashSet<Point>> FindRoomsInGroup(HashSet<Point> connectedGroup)
+    public List<HashSet<Point>> FindRoomsInGroup(HashSet<Point> connectedGroup)
     {
         HashSet<Point> unusedPoints = connectedGroup;
 
@@ -87,7 +87,7 @@ public class MapRoomTools : IMapRoomTools
     /// </summary>
     /// <param name="connectedGroup">Avilable points to find room in.</param>
     /// <returns></returns>
-    private HashSet<Point> FindRoomInGroup(HashSet<Point> connectedGroup)
+    public HashSet<Point> FindRoomInGroup(HashSet<Point> connectedGroup)
     {
         // Init start point to large number, used later to find lower point.
         Point startPoint = new Point(100000, 100000);

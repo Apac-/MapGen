@@ -14,4 +14,7 @@ public interface IMapRoomTools
 
     Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1);
 
+    List<HashSet<Point>> FindRoomsInGroup(HashSet<Point> connectedGroup);
+
+    HashSet<Point> FindRoomInGroup(HashSet<Point> connectedGroup);
 }
