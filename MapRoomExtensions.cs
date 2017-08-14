@@ -27,17 +27,4 @@ public static class MapRoomExtensions {
         return room.ContainsPoint(point);
     }
 
-    /// <summary>
-    /// Changes room grid locations from world space to offset from new origin.
-    /// </summary>
-    /// <param name="rooms">Rooms to change</param>
-    /// <param name="lowestWorldPoint">The lowest point in world location on map.</param>
-    public static void TranslateWorldToGridLocation(this List<MapRoom> rooms, Point lowestWorldPoint)
-    {
-        foreach (MapRoom room in rooms)
-        {
-            Point newGridLocation = new Point(room.gridLocation.X - lowestWorldPoint.X, room.gridLocation.Y - lowestWorldPoint.Y);
-            room.gridLocation = newGridLocation;
-        }
-    }
 }
