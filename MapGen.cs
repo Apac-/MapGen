@@ -115,13 +115,9 @@ public class MapGen : MonoBehaviour {
 
         List<MapRoom> hallwayRooms = mapRoomTools.FindHallwayRooms(hallwayLines, hubRooms);
 
-
-        return new MapData(hubRooms, hallwayRooms, hallwayLines, mapRoomFactory);
-
-
         currentState = GenerationState.Finished;
 
-        //return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines, upperRightPointInGridSpace);
+        return new MapData(hubRooms, hallwayRooms, hallwayLines, mapRoomFactory);
     }
 
 
