@@ -41,9 +41,11 @@ This is outdated but works fine in this instance. Replace as required.
 
 ### Installing
 
+Install Zenject and Unity-Delaunay from prerequisites section.
+
 Import MapGen into Unity3D project window.
 ```
-Drag MapGen (folder) into Unity project window under Scripts
+Drag MapGen/mapGen (folder) into Unity project window under Scripts
 ```
 
 Create new SceneContext object in scene
