@@ -56,7 +56,6 @@ public class MapGen : MonoBehaviour
                 break;
             case GenerationState.RoomsSeparated:
                 MapData mapData = GenerateMap(mapRooms);
-
                 if (mapData != null)
                 {
                     visualDebugger.SetMapData(mapData);
@@ -64,7 +63,6 @@ public class MapGen : MonoBehaviour
                 }
                 else
                     currentState = GenerationState.Reset;
-
                 break;
             case GenerationState.Reset:
                 Generate();
