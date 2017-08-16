@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class MapGen : MonoBehaviour {
+public class MapGen : MonoBehaviour
+{
     [SerializeField]
     private MapSettings mapSettings;
 
@@ -26,10 +27,11 @@ public class MapGen : MonoBehaviour {
     private MapGenVisualDebugger visualDebugger;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         currentState = GenerationState.Waiting;
         visualDebugger = gameObject.GetComponent<MapGenVisualDebugger>();
-	}
+    }
 
 
     // Constructor type method to inject into via zenject installer.
@@ -44,9 +46,10 @@ public class MapGen : MonoBehaviour {
         this.mapRoomTools = mapRoomTools;
         this.pointTriangulation = pointTriangulation;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         switch (currentState)
         {
             case GenerationState.Waiting:
@@ -114,7 +117,7 @@ public class MapGen : MonoBehaviour {
             hubRoomCenterPoints.Add(room.centerPoint);
         }
 
-        List<Line> connectingLineSegments = pointTriangulation.FindConnectingLineSegments(hubRoomCenterPoints, 
+        List<Line> connectingLineSegments = pointTriangulation.FindConnectingLineSegments(hubRoomCenterPoints,
                                                                                           mapSettings.percentOfRoomConnectionAboveMinPath);
 
         List<Line> hallwayLines = CreateHallwayLinesFromSegments(connectingLineSegments, hubRooms);
@@ -198,7 +201,8 @@ public class MapGen : MonoBehaviour {
     /// <param name="isHorizontal">Is the line horizontal or vertical?</param>
     /// <param name="bendInNorthEast">Is the right angle bend 'North East' in relation to the two rooms?</param>
     /// <returns></returns>
-    private List<Line> CreateHallwayLinesOfSetWidth(Vector2 startPoint, Vector2 endPoint, int sizeOfHallways, bool isHorizontal, bool bendInNorthEast = false) {
+    private List<Line> CreateHallwayLinesOfSetWidth(Vector2 startPoint, Vector2 endPoint, int sizeOfHallways, bool isHorizontal, bool bendInNorthEast = false)
+    {
         List<Line> segments = new List<Line>();
 
         // Add base line
@@ -322,7 +326,7 @@ public class MapGen : MonoBehaviour {
 
         // Check all rooms to see if they have settled into place
         do
-        { 
+        {
             roomsAsleep = true;
 
             yield return new WaitForSeconds(1f);

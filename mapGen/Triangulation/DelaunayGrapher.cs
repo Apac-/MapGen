@@ -30,9 +30,11 @@ public class DelaunayGrapher : IPointTriangulation
             bool foundInTree = false;
 
             // always add the min spanning tree segments to final.
-            foreach (LineSegment treeSeg in tree) {
+            foreach (LineSegment treeSeg in tree)
+            {
                 if (segment.p0.Value == treeSeg.p0.Value &&
-                    segment.p1.Value == treeSeg.p1.Value) {
+                    segment.p1.Value == treeSeg.p1.Value)
+                {
                     finalSegments.Add(segment);
                     foundInTree = true;
                     break;
@@ -40,7 +42,8 @@ public class DelaunayGrapher : IPointTriangulation
             }
 
             // Add in the extra segements.
-            if (!foundInTree && extraSegCount < numOfExtraSegments) {
+            if (!foundInTree && extraSegCount < numOfExtraSegments)
+            {
                 finalSegments.Add(segment);
                 extraSegCount++;
             }

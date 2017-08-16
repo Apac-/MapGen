@@ -21,7 +21,8 @@ public class MapRoomTools : IMapRoomTools
     /// <param name="r1">Second room</param>
     /// <param name="buffer">Makes sure the point isn't directly on a room boundary</param>
     /// <returns></returns>
-    public bool IsPointBetweenXBoundariesOfGivenRooms(Point midPoint, MapRoom r0, MapRoom r1, int buffer) {
+    public bool IsPointBetweenXBoundariesOfGivenRooms(Point midPoint, MapRoom r0, MapRoom r1, int buffer)
+    {
         if (midPoint.X >= r0.gridLocation.X + buffer && midPoint.X <= r0.endPoint.X - buffer)
         {
             if (midPoint.X >= r1.gridLocation.X + buffer && midPoint.X <= r1.endPoint.X - buffer)
@@ -70,7 +71,7 @@ public class MapRoomTools : IMapRoomTools
         {
             // Find a room in the unused point group
             HashSet<Point> foundRoom = FindRoomInGroup(unusedPoints);
-            
+
             // Add found room to the found rooms list
             foundRooms.Add(foundRoom);
 
@@ -132,7 +133,7 @@ public class MapRoomTools : IMapRoomTools
 
                 // check backwards
                 for (int i = 1; i <= diagStep; i++)
-                { 
+                {
                     Point stepPoint = new Point(currentPoint.X - i, currentPoint.Y);
 
                     if (connectedGroup.Contains(stepPoint))

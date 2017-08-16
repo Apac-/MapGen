@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapGenVisualDebugger : MonoBehaviour {
+public class MapGenVisualDebugger : MonoBehaviour
+{
 
     #region Change these in editor
     public bool debugMap;
@@ -34,10 +35,11 @@ public class MapGenVisualDebugger : MonoBehaviour {
     private MapData mapData;
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         if (debugMap && mapData != null)
             DrawDebugLines();
-	}
+    }
 
     public void SetMapData(MapData mapData)
     {
@@ -69,7 +71,8 @@ public class MapGenVisualDebugger : MonoBehaviour {
 
     private void DrawIndividualTiles(List<Vector2> tiles, Color color)
     {
-        foreach (Vector2 tile in tiles) {
+        foreach (Vector2 tile in tiles)
+        {
             Vector3 bottomLeft = new Vector3(tile.x, tile.y);
             Vector3 bottomRight = new Vector3(tile.x + 1, tile.y);
             Vector3 topRight = new Vector3(tile.x + 1, tile.y + 1);
@@ -92,7 +95,8 @@ public class MapGenVisualDebugger : MonoBehaviour {
 
     private void DrawRooms(List<MapRoom> rooms, Color color)
     {
-        foreach (MapRoom room in rooms) {
+        foreach (MapRoom room in rooms)
+        {
             Vector3 bottomLeft = new Vector3(room.gridLocation.X, room.gridLocation.Y);
             Vector3 bottomRight = new Vector3(room.gridLocation.X + room.width, bottomLeft.y);
             Vector3 topRight = new Vector3(room.endPoint.X, room.endPoint.Y);

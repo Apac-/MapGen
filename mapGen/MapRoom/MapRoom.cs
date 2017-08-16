@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapRoom {
+public class MapRoom
+{
     public RoomType roomType;
 
     public int Id { get; private set; }

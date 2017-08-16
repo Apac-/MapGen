@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public static class MathHelpers {
+public static class MathHelpers
+{
 
     /// <summary>
     /// Gets a standard normal distribution. Mean is 0 and deviation is 1.
@@ -21,7 +22,8 @@ public static class MathHelpers {
         return u * fac;
     }
 
-    private static float NormalizedGaussianFloat(float mean, float stdDev) {
+    private static float NormalizedGaussianFloat(float mean, float stdDev)
+    {
         return GaussianFloat() * stdDev + mean;
     }
 
@@ -33,9 +35,11 @@ public static class MathHelpers {
     /// <param name="maxValue">Upper bound of return value.</param>
     /// <param name="minValue">Lower bound of return value.</param>
     /// <returns></returns>
-    public static int FindValueInDistributionRange(int mean, int standardDeviation, int maxValue, int minValue) {
+    public static int FindValueInDistributionRange(int mean, int standardDeviation, int maxValue, int minValue)
+    {
         int valueInRange;
-        while (true) {
+        while (true)
+        {
             valueInRange = Mathf.RoundToInt(NormalizedGaussianFloat(mean, standardDeviation));
 
             if (valueInRange <= maxValue && valueInRange >= minValue)

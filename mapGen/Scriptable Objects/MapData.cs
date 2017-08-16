@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapData 
+public class MapData
 {
     public List<MapRoom> fillerRooms { get; private set; }
     public List<Line> hallwayLines { get; private set; }

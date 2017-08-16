@@ -125,7 +125,8 @@ public class MapRoomFactory : IMapRoomFactory
         // use Flood fill to find groupings of connected points on grid space
         List<HashSet<Point>> fillerGroupings = new List<HashSet<Point>>();
         HashSet<Point> usedPoints = new HashSet<Point>();
-        foreach (Point p in fillerPoints) {
+        foreach (Point p in fillerPoints)
+        {
             if (usedPoints.Contains(p))
                 continue;
 
@@ -161,7 +162,8 @@ public class MapRoomFactory : IMapRoomFactory
         List<MapRoom> rooms = new List<MapRoom>();
 
         // Take in rooms List<HashSet<Point>> and create map rooms out of it.
-        foreach (HashSet<Point> fillerGroup in fillerGroupings) {
+        foreach (HashSet<Point> fillerGroup in fillerGroupings)
+        {
             List<HashSet<Point>> seperatedRooms = mapRoomTools.FindRoomsInGroup(fillerGroup);
 
             // Create a collection of dungeon rooms from hashSets of points
@@ -254,4 +256,5 @@ public class MapRoomFactory : IMapRoomFactory
 
         return points;
     }
+
 }

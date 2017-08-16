@@ -10,4 +10,3 @@ public enum RoomType
     Hub,
     Hallway
 }
-

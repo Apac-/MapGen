@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class MapRoomExtensions {
+public static class MapRoomExtensions
+{
 
     /// <summary>
     /// Returns true if given point is within room.
     /// </summary>
     /// <param name="p">The given point to find</param>
     /// <returns></returns>
-    public static bool ContainsPoint(this MapRoom room, Point p) {
+    public static bool ContainsPoint(this MapRoom room, Point p)
+    {
 
         if (p.X >= room.gridLocation.X &&
             p.X <= room.endPoint.X &&
