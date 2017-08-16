@@ -13,7 +13,7 @@ public class MapGen : MonoBehaviour
     [SerializeField]
     private GameObject physicalRoom;
 
-    private enum GenerationState { Waiting, RoomsSeperated, Reset, Finished }
+    private enum GenerationState { Waiting, RoomsSeparated, Reset, Finished }
     private GenerationState currentState;
 
     private List<MapRoom> mapRooms;
@@ -54,7 +54,7 @@ public class MapGen : MonoBehaviour
         {
             case GenerationState.Waiting:
                 break;
-            case GenerationState.RoomsSeperated:
+            case GenerationState.RoomsSeparated:
                 MapData mapData = GenerateMap(mapRooms);
 
                 if (mapData != null)
@@ -345,6 +345,6 @@ public class MapGen : MonoBehaviour
         Time.timeScale = savedTimeScale;
 
         // Change state to move onto next step.
-        currentState = GenerationState.RoomsSeperated;
+        currentState = GenerationState.RoomsSeparated;
     }
 }
