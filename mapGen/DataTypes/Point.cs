@@ -43,9 +43,4 @@
     {
         return X == other.X && Y == other.Y;
     }
-
-    public static implicit operator Point(UnityEngine.Vector2 v2)
-    {
-        return new Point(UnityEngine.Mathf.RoundToInt(v2.x), UnityEngine.Mathf.RoundToInt(v2.y));
-    }
 }
