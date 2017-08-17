@@ -46,4 +46,33 @@ public class MapRoom
 
         return points;
     }
+
+    /// <summary>
+    /// Returns true if given point is within room.
+    /// </summary>
+    /// <param name="p">The given point to find</param>
+    /// <returns></returns>
+    public bool ContainsPoint(Point p)
+    {
+
+        if (p.X >= gridLocation.X &&
+            p.X <= endPoint.X &&
+            p.Y >= gridLocation.Y &&
+            p.Y <= endPoint.Y)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /// <summary>
+    /// Returns true if given point is within room.
+    /// </summary>
+    /// <param name="p">Vector2 point to find</param>
+    /// <returns></returns>
+    public bool ContainsPoint(Vector2 p)
+    {
+        return ContainsPoint(new Point((int)p.x, (int)p.y));
+    }
 }
