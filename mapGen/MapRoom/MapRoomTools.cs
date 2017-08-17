@@ -7,8 +7,8 @@ public class MapRoomTools : IMapRoomTools
 {
     public Point MidPointBetweenMapRooms(MapRoom r0, MapRoom r1)
     {
-        Point r0c = r0.centerPoint;
-        Point r1c = r1.centerPoint;
+        Point r0c = new Point(Mathf.RoundToInt(r0.centerPoint.x), Mathf.RoundToInt(r0.centerPoint.y));
+        Point r1c = new Point(Mathf.RoundToInt(r1.centerPoint.x), Mathf.RoundToInt(r1.centerPoint.y));
 
         return new Point((r0c.X + r1c.X) / 2, (r0c.Y + r1c.Y) / 2);
     }
