@@ -131,7 +131,7 @@ public class MapGen : MonoBehaviour
 
         List<MapRoom> hallwayRooms = mapRoomTools.FindHallwayRooms(hallwayLines, hubRooms);
 
-        return new MapData(hubRooms, hallwayRooms, hallwayLines, mapRoomFactory);
+        return mapDataFactory.CreateNewMapData(hubRooms, hallwayRooms, hallwayLines, mapRoomFactory);
     }
 
     // Removes the room helper objects from scene and resets mapRooms list.
