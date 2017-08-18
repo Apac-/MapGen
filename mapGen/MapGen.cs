@@ -19,8 +19,12 @@ public class MapGen : MonoBehaviour
     private List<MapRoom> mapRooms;
 
     private IMapRoomFactory mapRoomFactory;
+    private IMapDataFactory mapDataFactory;
+    private IHallwayFactory hallwayFactory;
+
     private IPhysicalMapRoomTools physMapRoomTools;
     private IMapRoomTools mapRoomTools;
+
     private IPointTriangulation pointTriangulation;
 
     // NOTE: This I wouldn't hold in a real project, instead it would subscribe to an event thrown from this object.
@@ -37,11 +41,15 @@ public class MapGen : MonoBehaviour
     // Constructor type method to inject into via zenject installer.
     [Inject]
     public void Construct(IMapRoomFactory mapRoomFactory,
+                          IMapDataFactory mapDataFactory,
+                          IHallwayFactory hallwayFactory,
                           IPhysicalMapRoomTools physMapRoomTools,
                           IMapRoomTools mapRoomTools,
                           IPointTriangulation pointTriangulation)
     {
         this.mapRoomFactory = mapRoomFactory;
+        this.mapDataFactory = mapDataFactory;
+        this.hallwayFactory = hallwayFactory;
         this.physMapRoomTools = physMapRoomTools;
         this.mapRoomTools = mapRoomTools;
         this.pointTriangulation = pointTriangulation;
@@ -55,6 +63,7 @@ public class MapGen : MonoBehaviour
             case GenerationState.Waiting:
                 break;
             case GenerationState.RoomsSeparated:
+                // TODO: This doesn't seem right.
                 MapData mapData = GenerateMap(mapRooms);
                 if (mapData != null)
                 {
