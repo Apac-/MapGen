@@ -13,9 +13,18 @@ public class GameInstaller : MonoInstaller<GameInstaller>
     {
         // MapGen is bound using a ZenjectBinding component object in scene.
 
-        Container.Bind<IMapRoomTools>().To<MapRoomTools>().AsSingle();
+        // Singles
         Container.Bind<IMapRoomFactory>().To<MapRoomFactory>().AsSingle();
-        Container.Bind<IPhysicalMapRoomTools>().To<PhysicalMapRoomTools>().AsSingle();
-        Container.Bind<IPointTriangulation>().To<DelaunayGrapher>().AsSingle();
+
+        // Transients
+        Container.Bind<IMapDataFactory>().To<MapDataFactory>().AsTransient();
+
+        Container.Bind<IHallwayFactory>().To<HallwayFactory>().AsTransient();
+
+        Container.Bind<IMapRoomTools>().To<MapRoomTools>().AsTransient();
+
+        Container.Bind<IPhysicalMapRoomTools>().To<PhysicalMapRoomTools>().AsTransient();
+
+        Container.Bind<IPointTriangulation>().To<DelaunayGrapher>().AsTransient();
     }
 }
