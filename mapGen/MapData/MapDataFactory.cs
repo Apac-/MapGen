@@ -2,12 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 public class MapDataFactory : IMapDataFactory
 {
     public MapData CreateNewMapData(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> hallwayLines, IMapRoomFactory mapRoomFactory)
     {
-        throw new NotImplementedException();
+        Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
+        Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
+
+        hubRooms = OffSetRoomsToZeroOrigin(hubRooms, bottomLeftPoint);
+        hallwayRooms = OffSetRoomsToZeroOrigin(hallwayRooms, bottomLeftPoint);
+        hallwayLines = OffsetLinesToZeroOrigin(hallwayLines, bottomLeftPoint);
+
+        int width = upperRightPoint.X - bottomLeftPoint.X;
+        int height = upperRightPoint.Y - bottomLeftPoint.Y;
+        RoomType[][] map = CreateMap(width, height);
+
+        map = AddRoomsToMap(hubRooms, map);
+        map = AddRoomsToMap(hallwayRooms, map);
+        map = AddLinesToMap(hallwayLines, map);
+
+        List<MapRoom> fillerRooms = mapRoomFactory.CreateRoomsFromFiller(map);
+        map = AddRoomsToMap(fillerRooms, map);
+
+        return new MapData(map, hubRooms, hallwayRooms, fillerRooms, hallwayLines, width, height);
     }
 
     /// <summary>
@@ -54,9 +73,9 @@ public class MapDataFactory : IMapDataFactory
     /// <summary>
     /// Modifies the basic map array with filler ids (1) in line positions.
     /// </summary>
-    /// <param name="map">Basic map array</param>
     /// <param name="lines">Lines that will be added to map as filler</param>
-    public void AddLinesToMap(List<Line> lines)
+    /// <param name="map"></param>
+    public RoomType[][] AddLinesToMap(List<Line> lines, RoomType[][] map)
     {
         foreach (Line line in lines)
         {
@@ -87,14 +106,16 @@ public class MapDataFactory : IMapDataFactory
                 }
             }
         }
+
+        return map;
     }
 
     /// <summary>
     /// Modfies the basic map array with room ids in their positions.
     /// </summary>
-    /// <param name="map">Basic map array</param>
     /// <param name="rooms">Rooms to add to map</param>
-    public void AddRoomsToMap(List<MapRoom> rooms)
+    /// <param name="map"></param>
+    public RoomType[][] AddRoomsToMap(List<MapRoom> rooms, RoomType[][] map)
     {
         foreach (MapRoom room in rooms)
         {
@@ -109,6 +130,8 @@ public class MapDataFactory : IMapDataFactory
                 }
             }
         }
+
+        return map;
     }
 
     /// <summary>

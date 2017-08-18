@@ -1,48 +1,36 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class MapData
 {
+    public RoomType[][] map { get; private set; }
+
     public List<MapRoom> fillerRooms { get; private set; }
-    public List<Line> hallwayLines { get; private set; }
     public List<MapRoom> hallwayRooms { get; private set; }
     public List<MapRoom> hubRooms { get; private set; }
-    public RoomType[][] map { get; private set; }
+
+    public List<Line> hallwayLines { get; private set; }
+
+    public Point greatestPoint { get { return new Point(width, height); } }
 
     public readonly int width;
     public readonly int height;
 
-    public Point greatestPoint { get { return new Point(width, height); } }
-
-    private IMapRoomFactory mapRoomFactory;
-
-    public MapData(List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<Line> connectingLines, IMapRoomFactory mapRoomFactory)
+    public MapData(RoomType[][] map, 
+                   List<MapRoom> hubRooms, List<MapRoom> hallwayRooms, List<MapRoom> fillerRooms,
+                   List<Line> hallwayLines, int width, int height)
     {
+        this.map = map;
+
         this.hubRooms = hubRooms;
         this.hallwayRooms = hallwayRooms;
-        this.hallwayLines = connectingLines;
+        this.fillerRooms = fillerRooms;
 
-        this.mapRoomFactory = mapRoomFactory;
+        this.hallwayLines = hallwayLines;
 
-        Point bottomLeftPoint = FindBottomLeftPointInMap(hubRooms, hallwayRooms, hallwayLines);
-        Point upperRightPoint = FindUpperRightPointInMap(hubRooms, hallwayRooms, hallwayLines);
-
-        hubRooms = OffSetRoomsToZeroOrigin(hubRooms, bottomLeftPoint);
-        hallwayRooms = OffSetRoomsToZeroOrigin(hallwayRooms, bottomLeftPoint);
-        hallwayLines = OffsetLinesToZeroOrigin(hallwayLines, bottomLeftPoint);
-
-        width = upperRightPoint.X - bottomLeftPoint.X;
-        height = upperRightPoint.Y - bottomLeftPoint.Y;
-        map = CreateMap(width, height);
-
-        AddRoomsToMap(hubRooms);
-        AddRoomsToMap(hallwayRooms);
-        AddLinesToMap(hallwayLines);
-
-        fillerRooms = this.mapRoomFactory.CreateRoomsFromFiller(map);
-        AddRoomsToMap(fillerRooms);
+        this.width = width;
+        this.height = height;
     }
 
 }
