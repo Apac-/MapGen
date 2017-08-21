@@ -16,12 +16,10 @@ public class MapGen : MonoBehaviour
     private enum GenerationState { Waiting, RoomsSeparated, Reset, Finished }
     private GenerationState currentState;
 
-    private List<MapRoom> mapRooms;
-
     private IMapRoomFactory mapRoomFactory;
     private IMapDataFactory mapDataFactory;
     private IHallwayFactory hallwayFactory;
-    private IPhysicalMapRoomFactory physMapRoomTools;
+    private IPhysicalMapRoomFactory physMapRoomFactory;
 
     private IMapRoomTools mapRoomTools;
 
@@ -43,14 +41,14 @@ public class MapGen : MonoBehaviour
     public void Construct(IMapRoomFactory mapRoomFactory,
                           IMapDataFactory mapDataFactory,
                           IHallwayFactory hallwayFactory,
-                          IPhysicalMapRoomFactory physMapRoomTools,
+                          IPhysicalMapRoomFactory physMapRoomFactory,
                           IMapRoomTools mapRoomTools,
                           IPointTriangulation pointTriangulation)
     {
         this.mapRoomFactory = mapRoomFactory;
         this.mapDataFactory = mapDataFactory;
         this.hallwayFactory = hallwayFactory;
-        this.physMapRoomTools = physMapRoomTools;
+        this.physMapRoomFactory = physMapRoomFactory;
         this.mapRoomTools = mapRoomTools;
         this.pointTriangulation = pointTriangulation;
     }
@@ -94,11 +92,11 @@ public class MapGen : MonoBehaviour
         // State is waiting for coroutine to finish
         currentState = GenerationState.Waiting;
 
-        mapRooms = mapRoomFactory.CreateRooms();
+        List<MapRoom> mapRooms = mapRoomFactory.CreateRooms();
 
-        physMapRoomTools.GeneratePhysicalRooms(this.transform, physicalRoom, mapRooms);
+        physMapRoomFactory.GeneratePhysicalRooms(this.transform, physicalRoom, mapRooms);
 
-        StartCoroutine(WaitTillRoomsSeperate(physMapRoomTools));
+        StartCoroutine(WaitTillRoomsSeperate(physMapRoomFactory));
     }
 
     /// <summary>
@@ -108,11 +106,12 @@ public class MapGen : MonoBehaviour
     /// <returns></returns>
     private MapData GenerateMap()
     {
-        List<MapRoom> rooms = physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation();
+        // Snap rooms to grid space from world space of physical helper rooms
+        List<MapRoom> rooms = physMapRoomFactory.SnapMapRoomLocationToPhysicalRoomLocation();
 
         List<MapRoom> hubRooms = mapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
 
-        // Re-generate if not enough hub rooms are found
+        // If not enough hub rooms are found, return null as this pass has failed
         if (hubRooms.Count <= mapSettings.minAmountOfHubRooms)
         {
             return null;
@@ -134,12 +133,9 @@ public class MapGen : MonoBehaviour
         return mapDataFactory.CreateNewMapData(hubRooms, hallwayRooms, hallwayLines, mapRoomFactory);
     }
 
-    // Removes the room helper objects from scene and resets mapRooms list.
     private void CleanUp()
     {
-        mapRooms = new List<MapRoom>();
-
-        physMapRoomTools.RemovePhysicalRooms();
+        physMapRoomFactory.RemovePhysicalRooms();
     }
 
     // Removes and resets all created objects to get ready for clean generation
