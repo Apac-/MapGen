@@ -60,25 +60,33 @@ public class MapGen : MonoBehaviour
         {
             case GenerationState.Waiting:
                 break;
-            case GenerationState.RoomsSeparated:
-                // TODO: This doesn't seem right.
-                MapData mapData = GenerateMap();
-                if (mapData != null)
-                {
-                    visualDebugger.SetMapData(mapData);
-                    currentState = GenerationState.Finished;
-                }
-                else
-                    currentState = GenerationState.Reset;
-                break;
             case GenerationState.Reset:
                 Generate();
+                break;
+            case GenerationState.RoomsSeparated:
+                WorkWithSeparatedRooms();
                 break;
             case GenerationState.Finished:
                 CleanUp();
                 currentState = GenerationState.Waiting;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Triggers the next step in generation after physical room objects have fully separated.
+    /// </summary>
+    private void WorkWithSeparatedRooms()
+    {
+        MapData mapData = GenerateMap();
+
+        if (mapData != null)
+        {
+            visualDebugger.SetMapData(mapData);
+            currentState = GenerationState.Finished;
+        }
+        else
+            currentState = GenerationState.Reset;
     }
 
     /// <summary>
