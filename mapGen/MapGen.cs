@@ -64,7 +64,7 @@ public class MapGen : MonoBehaviour
                 break;
             case GenerationState.RoomsSeparated:
                 // TODO: This doesn't seem right.
-                MapData mapData = GenerateMap(mapRooms);
+                MapData mapData = GenerateMap();
                 if (mapData != null)
                 {
                     visualDebugger.SetMapData(mapData);
@@ -106,9 +106,9 @@ public class MapGen : MonoBehaviour
     /// </summary>
     /// <param name="rooms">Rooms that have been seperated (not overlapping)</param>
     /// <returns></returns>
-    private MapData GenerateMap(List<MapRoom> rooms)
+    private MapData GenerateMap()
     {
-        physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation();
+        List<MapRoom> rooms = physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation();
 
         List<MapRoom> hubRooms = mapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
 
