@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class MapGen : MonoBehaviour
+public class MapGeneration : MonoBehaviour
 {
     [SerializeField]
     private MapSettings mapSettings;

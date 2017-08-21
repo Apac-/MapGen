@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(MapGen))]
+[CustomEditor(typeof(MapGeneration))]
 public class MapGenEditor : Editor
 {
 
@@ -10,7 +10,7 @@ public class MapGenEditor : Editor
     {
         DrawDefaultInspector();
 
-        MapGen mapGen = (MapGen)target;
+        MapGeneration mapGen = (MapGeneration)target;
 
         if (GUILayout.Button("Generate Map"))
             mapGen.Generate();
