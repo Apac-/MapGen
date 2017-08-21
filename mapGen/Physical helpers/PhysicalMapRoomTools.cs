@@ -14,6 +14,9 @@ public class PhysicalMapRoomTools : IPhysicalMapRoomTools
     /// <param name="mapRooms">MapRoom holds the data that will be used later after, based on attributes of the created physical helper objects</param>
     public void GeneratePhysicalRooms(Transform parent, GameObject roomPrefab, List<MapRoom> mapRooms)
     {
+        if (physicalRooms != null)
+            RemovePhysicalRooms();
+
         physicalRooms = new List<GameObject>();
 
         foreach (MapRoom room in mapRooms)
@@ -22,6 +25,8 @@ public class PhysicalMapRoomTools : IPhysicalMapRoomTools
 
             if (physicalRoom.GetComponent<Rigidbody2D>() == null)
                 throw new ArgumentNullException("GetComponent Rigidbody2D", "Prefab must contain a Rigidbody2D component.");
+            if (physicalRoom.GetComponent<MapRoomHolder>() == null)
+                throw new ArgumentNullException("GetComponent MapRoomHolder", "Prefab must contain a MapRoomHolder component.");
 
             physicalRoom.GetComponent<MapRoomHolder>().mapRoom = room;
             physicalRoom.transform.position = new Vector3(room.gridLocation.X, room.gridLocation.Y);
@@ -33,15 +38,19 @@ public class PhysicalMapRoomTools : IPhysicalMapRoomTools
     }
 
     /// <summary>
-    /// Remove all helper room objects from parent.
+    /// Destroy all physical rooms.
     /// </summary>
-    /// <param name="parent">Physcial room helper object parent</param>
-    public void RemovePhysicalRooms(Transform parent)
+    public void RemovePhysicalRooms()
     {
-        foreach (Transform room in parent)
+        if (physicalRooms == null)
+            throw new ArgumentNullException("Physical Rooms", "Physical Rooms have not been created yet. Use GeneratePhysicalRooms first");
+
+        foreach (GameObject room in physicalRooms)
         {
-            GameObject.Destroy(room.gameObject);
+            GameObject.Destroy(room);
         }
+
+        physicalRooms = null;
     }
 
     /// <summary>
@@ -65,13 +74,15 @@ public class PhysicalMapRoomTools : IPhysicalMapRoomTools
     /// <summary>
     /// Updates location of all map rooms by their physical helper objects.
     /// </summary>
-    /// <param name="roomHolder">Parent transform that holds physical helper objects</param>
-    public void SnapMapRoomLocationToPhysicalRoomLocation(Transform roomHolder)
+    public void SnapMapRoomLocationToPhysicalRoomLocation()
     {
-        foreach (Transform child in roomHolder)
+        if (physicalRooms == null)
+            throw new ArgumentNullException("Physical Rooms", "Physical Rooms have not been created yet. Use GeneratePhysicalRooms first");
+
+        foreach (GameObject room in physicalRooms)
         {
-            Point location = new Point(Mathf.RoundToInt(child.position.x), Mathf.RoundToInt(child.position.y));
-            child.GetComponent<MapRoomHolder>().mapRoom.gridLocation = location;
+            Point location = new Point(Mathf.RoundToInt(room.transform.position.x), Mathf.RoundToInt(room.transform.position.y));
+            room.GetComponent<MapRoomHolder>().mapRoom.gridLocation = location;
         }
     }
 }

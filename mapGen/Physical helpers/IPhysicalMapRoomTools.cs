@@ -4,7 +4,7 @@ using UnityEngine;
 public interface IPhysicalMapRoomTools
 {
     void GeneratePhysicalRooms(Transform parent, GameObject roomPrefab, List<MapRoom> mapRooms);
-    void RemovePhysicalRooms(Transform parent);
-    void SnapMapRoomLocationToPhysicalRoomLocation(Transform roomHolder);
+    void RemovePhysicalRooms();
+    void SnapMapRoomLocationToPhysicalRoomLocation();
     bool RoomsHaveSeparated();
 }

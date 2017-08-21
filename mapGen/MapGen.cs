@@ -108,7 +108,7 @@ public class MapGen : MonoBehaviour
     /// <returns></returns>
     private MapData GenerateMap(List<MapRoom> rooms)
     {
-        physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation(this.transform);
+        physMapRoomTools.SnapMapRoomLocationToPhysicalRoomLocation();
 
         List<MapRoom> hubRooms = mapRoomTools.FindHubRooms(rooms, mapSettings.hubRoomCutoff);
 
@@ -139,7 +139,7 @@ public class MapGen : MonoBehaviour
     {
         mapRooms = new List<MapRoom>();
 
-        physMapRoomTools.RemovePhysicalRooms(this.transform);
+        physMapRoomTools.RemovePhysicalRooms();
     }
 
     // Removes and resets all created objects to get ready for clean generation
