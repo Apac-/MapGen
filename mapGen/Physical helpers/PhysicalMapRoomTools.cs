@@ -43,7 +43,7 @@ public class PhysicalMapRoomTools : IPhysicalMapRoomTools
     public void RemovePhysicalRooms()
     {
         if (physicalRooms == null)
-            throw new ArgumentNullException("Physical Rooms", "Physical Rooms have not been created yet. Use GeneratePhysicalRooms first");
+            return;
 
         foreach (GameObject room in physicalRooms)
         {
