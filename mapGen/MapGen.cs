@@ -21,8 +21,8 @@ public class MapGen : MonoBehaviour
     private IMapRoomFactory mapRoomFactory;
     private IMapDataFactory mapDataFactory;
     private IHallwayFactory hallwayFactory;
+    private IPhysicalMapRoomFactory physMapRoomTools;
 
-    private IPhysicalMapRoomTools physMapRoomTools;
     private IMapRoomTools mapRoomTools;
 
     private IPointTriangulation pointTriangulation;
@@ -43,7 +43,7 @@ public class MapGen : MonoBehaviour
     public void Construct(IMapRoomFactory mapRoomFactory,
                           IMapDataFactory mapDataFactory,
                           IHallwayFactory hallwayFactory,
-                          IPhysicalMapRoomTools physMapRoomTools,
+                          IPhysicalMapRoomFactory physMapRoomTools,
                           IMapRoomTools mapRoomTools,
                           IPointTriangulation pointTriangulation)
     {
@@ -155,7 +155,7 @@ public class MapGen : MonoBehaviour
     /// </summary>
     /// <param name="roomHolder">Parent object where helper rooms are kept in scene.</param>
     /// <returns></returns>
-    private IEnumerator WaitTillRoomsSeperate(IPhysicalMapRoomTools physMapRoomTools)
+    private IEnumerator WaitTillRoomsSeperate(IPhysicalMapRoomFactory physMapRoomTools)
     {
         float savedTimeScale = Time.timeScale;
 

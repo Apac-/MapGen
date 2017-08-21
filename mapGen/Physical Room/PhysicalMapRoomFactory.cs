@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicalMapRoomTools : IPhysicalMapRoomTools
+public class PhysicalMapRoomFactory : IPhysicalMapRoomFactory
 {
     private List<GameObject> physicalRooms;
 

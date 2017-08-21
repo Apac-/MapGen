@@ -23,7 +23,7 @@ public class GameInstaller : MonoInstaller<GameInstaller>
 
         Container.Bind<IMapRoomTools>().To<MapRoomTools>().AsTransient();
 
-        Container.Bind<IPhysicalMapRoomTools>().To<PhysicalMapRoomTools>().AsTransient();
+        Container.Bind<IPhysicalMapRoomFactory>().To<PhysicalMapRoomFactory>().AsTransient();
 
         Container.Bind<IPointTriangulation>().To<DelaunayGrapher>().AsTransient();
     }
