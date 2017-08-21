@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Zenject;
+using MapGen;
 
 public class GameInstaller : MonoInstaller<GameInstaller>
 {

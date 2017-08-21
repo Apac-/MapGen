@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEditor;
+using MapGen;
 
 [CustomEditor(typeof(MapGeneration))]
 public class MapGenEditor : Editor

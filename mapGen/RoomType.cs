@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public enum RoomType
+namespace MapGen
 {
-    Empty,
-    Filler,
-    Hub,
-    Hallway
+    public enum RoomType
+    {
+        Empty,
+        Filler,
+        Hub,
+        Hallway
+    }
 }
