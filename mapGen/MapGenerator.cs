@@ -7,7 +7,7 @@ using Zenject;
 
 namespace MapGen
 {
-    public class MapGeneration : MonoBehaviour
+    public class MapGenerator : MonoBehaviour
     {
         [SerializeField]
         private MapSettings mapSettings;

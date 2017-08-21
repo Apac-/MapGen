@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using MapGen;
 
-[CustomEditor(typeof(MapGeneration))]
+[CustomEditor(typeof(MapGenerator))]
 public class MapGenEditor : Editor
 {
 
@@ -11,7 +11,7 @@ public class MapGenEditor : Editor
     {
         DrawDefaultInspector();
 
-        MapGeneration mapGen = (MapGeneration)target;
+        MapGenerator mapGen = (MapGenerator)target;
 
         if (GUILayout.Button("Generate Map"))
             mapGen.Generate();
