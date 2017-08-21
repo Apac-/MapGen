@@ -98,7 +98,7 @@ public class MapGen : MonoBehaviour
 
         physMapRoomTools.GeneratePhysicalRooms(this.transform, physicalRoom, mapRooms);
 
-        StartCoroutine(WaitTillRoomsSeperate(this.transform));
+        StartCoroutine(WaitTillRoomsSeperate(physMapRoomTools));
     }
 
     /// <summary>
@@ -155,31 +155,16 @@ public class MapGen : MonoBehaviour
     /// </summary>
     /// <param name="roomHolder">Parent object where helper rooms are kept in scene.</param>
     /// <returns></returns>
-    private IEnumerator WaitTillRoomsSeperate(Transform roomHolder)
+    private IEnumerator WaitTillRoomsSeperate(IPhysicalMapRoomTools physMapRoomTools)
     {
-        bool roomsAsleep;
-
         float savedTimeScale = Time.timeScale;
 
         Time.timeScale = mapSettings.speedOfPhysicsSeperation;
 
-        // Check all rooms to see if they have settled into place
-        do
+        while(physMapRoomTools.RoomsHaveSeparated() == false)
         {
-            roomsAsleep = true;
-
             yield return new WaitForSeconds(1f);
-
-            foreach (Transform trans in roomHolder)
-            {
-                if (trans.GetComponent<Rigidbody2D>().IsAwake())
-                {
-                    roomsAsleep = false;
-                    break;
-                }
-            }
-
-        } while (!roomsAsleep);
+        }
 
         Time.timeScale = savedTimeScale;
 
