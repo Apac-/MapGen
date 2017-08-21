@@ -74,15 +74,21 @@ public class PhysicalMapRoomFactory : IPhysicalMapRoomFactory
     /// <summary>
     /// Updates location of all map rooms by their physical helper objects.
     /// </summary>
-    public void SnapMapRoomLocationToPhysicalRoomLocation()
+    public List<MapRoom> SnapMapRoomLocationToPhysicalRoomLocation()
     {
         if (physicalRooms == null)
             throw new ArgumentNullException("Physical Rooms", "Physical Rooms have not been created yet. Use GeneratePhysicalRooms first");
 
+        List<MapRoom> snappedRooms = new List<MapRoom>();
+
         foreach (GameObject room in physicalRooms)
         {
             Point location = new Point(Mathf.RoundToInt(room.transform.position.x), Mathf.RoundToInt(room.transform.position.y));
-            room.GetComponent<MapRoomHolder>().mapRoom.gridLocation = location;
+            MapRoom mapRoom = room.GetComponent<MapRoomHolder>().mapRoom;
+            mapRoom.gridLocation = location;
+            snappedRooms.Add(mapRoom);
         }
+
+        return snappedRooms;
     }
 }
